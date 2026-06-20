@@ -67,6 +67,36 @@ For quick UI-only viewing, you can open `web/index.html` directly. Messaging, se
 
 The seed creates your stable identity. The app can derive an identity ID from it, and that identity helps detect if a contact's identity changes later.
 
+## Recovery Phrase Basics
+
+The recovery phrase is the 12-word phrase created by `Generate Seed`. It is the root secret for your CipherLane identity.
+
+- The recovery phrase restores your identity on this browser or another device.
+- The `Seed passphrase` protects the encrypted copy saved in the current browser.
+- The seed passphrase does not replace the recovery phrase. You still need the recovery phrase if the browser storage is cleared or you move to a new device.
+- Anyone who gets the recovery phrase can restore the same identity, so treat it like a private key.
+
+To create a new recovery phrase:
+
+1. Open `Configuration Settings`.
+2. In `Step 1 - Seed Identity`, click `Generate Seed`.
+3. Copy the 12-word phrase shown in the recovery phrase field.
+4. Store it privately, preferably in a password manager or offline secure note.
+5. Enter a strong `Seed passphrase`.
+6. Click `Save Encrypted` to save an encrypted copy in this browser.
+7. Confirm the `You` field shows the derived identity ID.
+
+To restore an existing recovery phrase during setup:
+
+1. Open `Configuration Settings`.
+2. Paste the 12-word phrase into `Restore phrase`.
+3. Click `Restore Seed Phrase`.
+4. Confirm the `You` field updates to the restored identity ID.
+5. Enter a `Seed passphrase`.
+6. Click `Save Encrypted` if you want this browser to remember the encrypted seed.
+
+Do not send the recovery phrase through chat, email, screenshots, or shared documents. If you must store it digitally, use a password manager or another encrypted storage tool.
+
 ## Start a Secure Chat
 
 For local testing, open the app in two browser windows or two different browser profiles.
@@ -116,7 +146,7 @@ Use the `+` button to open chat options.
 
 ## Seed Recovery
 
-Your seed is the recovery phrase for your identity. Keep it private.
+Your seed is the recovery phrase for your identity. Keep it private. Use this flow when you already have a recovery phrase and want to restore the same identity.
 
 To restore:
 
@@ -195,4 +225,5 @@ Installation works best when the app is opened from `http://localhost:8000` or a
 - Always compare the verification code with your friend through a trusted channel.
 - Anyone with your recovery phrase can restore your identity. Store it offline or in a password manager.
 - Use a strong seed passphrase. It protects the local encrypted seed stored in the browser.
+- If you lose the recovery phrase and the saved browser seed, the identity may not be recoverable.
 - Local testing with `ws://localhost:8765` is not the same as production deployment. Use `wss://` behind TLS for remote use.

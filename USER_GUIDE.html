@@ -208,6 +208,37 @@
     </section>
 
     <section>
+      <h2>Recovery Phrase Basics</h2>
+      <p>The recovery phrase is the 12-word phrase created by <code>Generate Seed</code>. It is the root secret for your CipherLane identity.</p>
+      <ul>
+        <li>The recovery phrase restores your identity on this browser or another device.</li>
+        <li>The <code>Seed passphrase</code> protects the encrypted copy saved in the current browser.</li>
+        <li>The seed passphrase does not replace the recovery phrase. You still need the recovery phrase if the browser storage is cleared or you move to a new device.</li>
+        <li>Anyone who gets the recovery phrase can restore the same identity, so treat it like a private key.</li>
+      </ul>
+      <h3>Create a new recovery phrase</h3>
+      <ol>
+        <li>Open <code>Configuration Settings</code>.</li>
+        <li>In <code>Step 1 - Seed Identity</code>, click <code>Generate Seed</code>.</li>
+        <li>Copy the 12-word phrase shown in the recovery phrase field.</li>
+        <li>Store it privately, preferably in a password manager or offline secure note.</li>
+        <li>Enter a strong <code>Seed passphrase</code>.</li>
+        <li>Click <code>Save Encrypted</code> to save an encrypted copy in this browser.</li>
+        <li>Confirm the <code>You</code> field shows the derived identity ID.</li>
+      </ol>
+      <h3>Restore an existing recovery phrase during setup</h3>
+      <ol>
+        <li>Open <code>Configuration Settings</code>.</li>
+        <li>Paste the 12-word phrase into <code>Restore phrase</code>.</li>
+        <li>Click <code>Restore Seed Phrase</code>.</li>
+        <li>Confirm the <code>You</code> field updates to the restored identity ID.</li>
+        <li>Enter a <code>Seed passphrase</code>.</li>
+        <li>Click <code>Save Encrypted</code> if you want this browser to remember the encrypted seed.</li>
+      </ol>
+      <p class="note">Do not send the recovery phrase through chat, email, screenshots, or shared documents. If you must store it digitally, use a password manager or another encrypted storage tool.</p>
+    </section>
+
+    <section>
       <h2>Start a Secure Chat</h2>
       <p>For local testing, open the app in two browser windows or two different browser profiles.</p>
       <h3>First window</h3>
@@ -260,7 +291,7 @@
 
     <section>
       <h2>Seed Recovery</h2>
-      <p>Your seed is the recovery phrase for your identity. Keep it private.</p>
+      <p>Your seed is the recovery phrase for your identity. Keep it private. Use this flow when you already have a recovery phrase and want to restore the same identity.</p>
       <h3>Restore from phrase</h3>
       <ol>
         <li>Paste your 12-word recovery phrase into <code>Recovery phrase appears here</code>.</li>
@@ -339,6 +370,7 @@
         <li>Always compare the verification code with your friend through a trusted channel.</li>
         <li>Anyone with your recovery phrase can restore your identity. Store it offline or in a password manager.</li>
         <li>Use a strong seed passphrase. It protects the local encrypted seed stored in the browser.</li>
+        <li>If you lose the recovery phrase and the saved browser seed, the identity may not be recoverable.</li>
         <li>Local testing with <code>ws://localhost:8765</code> is not the same as production deployment. Use <code>wss://</code> behind TLS for remote use.</li>
       </ul>
     </section>

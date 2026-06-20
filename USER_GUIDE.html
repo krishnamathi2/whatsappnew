@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CipherLane Messenger User Guide</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f6f8f9;
+      --panel: #ffffff;
+      --ink: #172126;
+      --muted: #5c6b73;
+      --line: #d9e1e5;
+      --accent: #008c73;
+      --code: #101820;
+      --code-ink: #edf7f4;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(960px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 56px;
+    }
+
+    header {
+      padding: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      line-height: 1.2;
+      margin: 0 0 12px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+    }
+
+    h2 {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      font-size: 1.55rem;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 760px;
+    }
+
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-top: 18px;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 16px 1.4rem;
+      padding: 0;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    code {
+      font-family: Consolas, "Cascadia Code", monospace;
+      font-size: 0.95em;
+      background: rgba(0, 140, 115, 0.12);
+      padding: 0.08rem 0.28rem;
+      border-radius: 4px;
+    }
+
+    pre {
+      margin: 12px 0 18px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      border-radius: 8px;
+      background: var(--code);
+      color: var(--code-ink);
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      padding: 12px 14px;
+      background: rgba(0, 140, 115, 0.1);
+      margin: 14px 0;
+      border-radius: 0 6px 6px 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b141a;
+        --panel: #111b21;
+        --ink: #edf3f5;
+        --muted: #a7b8bf;
+        --line: #25343c;
+        --accent: #25d366;
+        --code: #071014;
+        --code-ink: #e7fff4;
+      }
+    }
+
+    @media (max-width: 640px) {
+      main {
+        width: min(100% - 20px, 960px);
+        padding-top: 14px;
+      }
+
+      header,
+      section {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>CipherLane Messenger User Guide</h1>
+      <p class="lead">CipherLane Messenger is a browser-based encrypted chat app. It uses a local websocket relay to pass messages between users, then encrypts chat content in the browser with an ECDH key exchange and AES-GCM.</p>
+    </header>
+
+    <section>
+      <h2>What You Need</h2>
+      <ul>
+        <li>A modern browser such as Microsoft Edge or Chrome.</li>
+        <li>Python with the <code>websockets</code> package installed.</li>
+        <li>Access to the <code>web</code> folder in this project.</li>
+        <li>A relay URL. For local testing, use <code>ws://localhost:8765</code>.</li>
+      </ul>
+      <pre><code>pip install -r requirements.txt</code></pre>
+    </section>
+
+    <section>
+      <h2>Start the App</h2>
+      <p>Open two PowerShell windows in the project folder.</p>
+      <p>In the first window, start the websocket relay:</p>
+      <pre><code>python server.py</code></pre>
+      <p>The relay should print:</p>
+      <pre><code>Server running on ws://localhost:8765</code></pre>
+      <p>In the second window, serve the web app:</p>
+      <pre><code>python -m http.server 8000 --directory web</code></pre>
+      <p>Open the app in your browser:</p>
+      <pre><code>http://localhost:8000</code></pre>
+      <p class="note">For quick UI-only viewing, you can open <code>web/index.html</code> directly. Messaging, service worker install, and some browser features work best through <code>http://localhost:8000</code>.</p>
+    </section>
+
+    <section>
+      <h2>First-Time Setup</h2>
+      <ol>
+        <li>Review the onboarding screens.</li>
+        <li>Click <code>Generate Seed</code> if a seed was not already generated.</li>
+        <li>Enter a strong <code>Seed passphrase</code>.</li>
+        <li>Click <code>Save Encrypted</code> to save the seed locally in this browser.</li>
+        <li>Copy the recovery phrase and store it somewhere private.</li>
+      </ol>
+      <p>The seed creates your stable identity. The app can derive an identity ID from it, and that identity helps detect if a contact's identity changes later.</p>
+    </section>
+
+    <section>
+      <h2>Start a Secure Chat</h2>
+      <p>For local testing, open the app in two browser windows or two different browser profiles.</p>
+      <h3>First window</h3>
+      <ol>
+        <li>Set <code>Server URL</code> to <code>ws://localhost:8765</code>.</li>
+        <li>Set <code>You</code> to <code>Alice</code>.</li>
+        <li>Set <code>Friend</code> to <code>Bob</code>.</li>
+        <li>Click <code>Connect</code>.</li>
+      </ol>
+      <h3>Second window</h3>
+      <ol>
+        <li>Set <code>Server URL</code> to <code>ws://localhost:8765</code>.</li>
+        <li>Set <code>You</code> to <code>Bob</code>.</li>
+        <li>Set <code>Friend</code> to <code>Alice</code>.</li>
+        <li>Click <code>Connect</code>.</li>
+      </ol>
+      <p>After both users are connected, click <code>Start Secure</code> from either side. When the handshake completes, both sides should show a verification code. Compare the code out of band before sending sensitive messages.</p>
+    </section>
+
+    <section>
+      <h2>Send Messages</h2>
+      <ul>
+        <li>Type in the message box and press <code>Enter</code>, or click <code>Send</code>.</li>
+        <li>A single check means the message was sent.</li>
+        <li>Double checks mean the peer reported delivery or read status.</li>
+        <li>Typing status appears when the peer is composing a message.</li>
+      </ul>
+      <p>If the send button says <code>Mic</code>, the message field is empty. Voice notes are not available yet.</p>
+    </section>
+
+    <section>
+      <h2>Friend Links</h2>
+      <ol>
+        <li>Enter your <code>Server URL</code> and <code>You</code> name.</li>
+        <li>Click <code>Create Friend Link</code>.</li>
+        <li>Click <code>Copy Link</code>.</li>
+        <li>Send the link to your friend.</li>
+      </ol>
+      <p>When your friend opens the link, the app can fill in the relay and peer fields from the URL parameters.</p>
+    </section>
+
+    <section>
+      <h2>Contacts and New Chats</h2>
+      <p>Use the <code>+</code> button to open chat options.</p>
+      <ul>
+        <li><code>New contact</code> lets you save a name and friend link for quick access.</li>
+        <li><code>New group</code> and community-style flows are present in the UI, but group messaging is not fully available yet.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Seed Recovery</h2>
+      <p>Your seed is the recovery phrase for your identity. Keep it private.</p>
+      <h3>Restore from phrase</h3>
+      <ol>
+        <li>Paste your 12-word recovery phrase into <code>Recovery phrase appears here</code>.</li>
+        <li>Click <code>Restore From Phrase</code>.</li>
+        <li>Enter a passphrase.</li>
+        <li>Click <code>Save Encrypted</code> if you want this browser to remember the encrypted seed.</li>
+      </ol>
+      <h3>Unlock saved seed</h3>
+      <ol>
+        <li>Enter the same seed passphrase used when saving it.</li>
+        <li>Click <code>Unlock Saved Seed</code>.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Seed QR Transfer</h2>
+      <h3>Export</h3>
+      <ol>
+        <li>Generate or restore your seed.</li>
+        <li>Click <code>Show Seed QR</code>.</li>
+        <li>Scan the QR from the other device.</li>
+      </ol>
+      <h3>Import</h3>
+      <ol>
+        <li>Click <code>Import Seed QR</code>.</li>
+        <li>Choose an image containing the QR code.</li>
+        <li>Confirm that the identity ID is restored.</li>
+      </ol>
+      <p>Some browsers do not support QR scanning through <code>BarcodeDetector</code>. If import fails, paste the recovery phrase manually.</p>
+    </section>
+
+    <section>
+      <h2>Install as an App</h2>
+      <p>When the browser supports installation, click <code>Install App</code> in the left panel. In Edge, you can also use:</p>
+      <pre><code>Menu -&gt; Apps -&gt; Install this site as an app</code></pre>
+      <p>Installation works best when the app is opened from <code>http://localhost:8000</code> or another web server, not directly from the file system.</p>
+    </section>
+
+    <section>
+      <h2>Troubleshooting</h2>
+      <h3>Socket error or disconnected</h3>
+      <ul>
+        <li>Confirm the relay is running with <code>python server.py</code>.</li>
+        <li>Confirm the app field is set to <code>ws://localhost:8765</code>.</li>
+        <li>Make sure each user has a unique <code>You</code> name.</li>
+        <li>Restart the relay if a previous test left stale browser tabs connected.</li>
+      </ul>
+      <h3>Target not online</h3>
+      <ul>
+        <li>The friend name must exactly match the other user's <code>You</code> value.</li>
+        <li>Both users must click <code>Connect</code> before starting the secure channel.</li>
+      </ul>
+      <h3>Secure channel not ready</h3>
+      <ul>
+        <li>Click <code>Start Secure</code> after both users are connected.</li>
+        <li>Wait for the verification code to appear.</li>
+        <li>If the peer identity changed warning appears, compare the verification code before continuing.</li>
+      </ul>
+      <h3>Could not unlock seed</h3>
+      <ul>
+        <li>Check the seed passphrase.</li>
+        <li>If the saved encrypted seed is not available on this device, restore from the recovery phrase instead.</li>
+      </ul>
+      <h3>Python does not start</h3>
+      <ul>
+        <li>Install Python and add it to PATH.</li>
+        <li>Recreate the virtual environment if <code>.venv</code> points to a missing Python install.</li>
+        <li>Install dependencies with <code>pip install -r requirements.txt</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Security Notes</h2>
+      <ul>
+        <li>The relay forwards messages, but chat content is encrypted in the browser after the secure handshake.</li>
+        <li>Always compare the verification code with your friend through a trusted channel.</li>
+        <li>Anyone with your recovery phrase can restore your identity. Store it offline or in a password manager.</li>
+        <li>Use a strong seed passphrase. It protects the local encrypted seed stored in the browser.</li>
+        <li>Local testing with <code>ws://localhost:8765</code> is not the same as production deployment. Use <code>wss://</code> behind TLS for remote use.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

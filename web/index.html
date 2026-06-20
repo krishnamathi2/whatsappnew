@@ -293,6 +293,15 @@
       gap: 8px;
     }
 
+    .circlePanel {
+      border: 1px solid rgba(37, 211, 102, 0.22);
+      border-radius: 12px;
+      padding: 10px;
+      background: #0f1a20;
+      display: grid;
+      gap: 8px;
+    }
+
     .seedTitle {
       margin: 0;
       font-size: 0.84rem;
@@ -1359,6 +1368,21 @@
           <button id="copyShare" class="secondaryBtn" type="button">Copy Link</button>
         </div>
         <input id="shareLink" class="shareField" placeholder="Friend link appears here" readonly />
+
+        <p class="configStepLabel">Step 3 - Closed Circle MVP</p>
+        <section class="circlePanel">
+          <input id="circleName" placeholder="Circle name (Family, Team)" />
+          <div class="row">
+            <button id="createCircle" class="secondaryBtn" type="button">Create Circle</button>
+            <button id="useCircleMode" class="secondaryBtn" type="button">Use Circle Chat</button>
+          </div>
+          <input id="circleMember" placeholder="Member identity/name to invite" />
+          <div class="row">
+            <button id="inviteCircleMember" class="secondaryBtn" type="button">Invite Member</button>
+            <button id="approveCircleJoin" class="secondaryBtn" type="button">Approve Join</button>
+          </div>
+          <input id="circleStatus" class="shareField" placeholder="Circle status appears here" readonly />
+        </section>
       </section>
 
       <section class="chatRail">
@@ -1655,6 +1679,13 @@
       makeShare: document.getElementById("makeShare"),
       copyShare: document.getElementById("copyShare"),
       shareLink: document.getElementById("shareLink"),
+      circleName: document.getElementById("circleName"),
+      createCircle: document.getElementById("createCircle"),
+      useCircleMode: document.getElementById("useCircleMode"),
+      circleMember: document.getElementById("circleMember"),
+      inviteCircleMember: document.getElementById("inviteCircleMember"),
+      approveCircleJoin: document.getElementById("approveCircleJoin"),
+      circleStatus: document.getElementById("circleStatus"),
       seedPassphrase: document.getElementById("seedPassphrase"),
       seedPhrase: document.getElementById("seedPhrase"),
       identityId: document.getElementById("identityId"),
@@ -1737,6 +1768,11 @@
     let typingStopTimer = null;
     let incomingTypingClearTimer = null;
     let identityKeyMaterial = "";
+    let chatMode = "direct";
+    let activeCircleId = "";
+    let pendingCircleJoin = null;
+    const circles = new Map();
+    const circleEpochKeys = new Map();
     const outboundMessageRefs = new Map();
     const ONBOARDING_SUPPRESS_KEY = "cipherlane.onboardingSuppressed.v1";
     const SEED_STORAGE_KEY = "cipherlane.encryptedSeed.v1";
@@ -1762,6 +1798,16 @@
     }
 
     function updateChatCard() {
+      if (chatMode === "circle" && activeCircleId && circles.has(activeCircleId)) {
+        const circle = circles.get(activeCircleId);
+        const initial = circle.name.slice(0, 1).toUpperCase();
+        dom.chatTitle.textContent = circle.name;
+        dom.chatSub.textContent = `Closed circle • epoch ${circle.epoch} • ${circle.members.size} member(s)`;
+        dom.avatar.textContent = initial;
+        dom.headerAvatar.textContent = initial;
+        return;
+      }
+
       if (!currentPeer) {
         dom.chatTitle.textContent = "No active chat";
         dom.chatSub.textContent = "Connect and start secure channel";
@@ -1835,6 +1881,136 @@
         tickEl.textContent = "✓✓";
         tickEl.style.color = "#7fd5ff";
       }
+    }
+
+    function setCircleStatus(text) {
+      dom.circleStatus.value = text;
+      if (text) {
+        addMessage(text, "system");
+      }
+    }
+
+    function circleMemberList(circle) {
+      return Array.from(circle.members);
+    }
+
+    function circleMembershipState(circle) {
+      return {
+        circle_id: circle.id,
+        name: circle.name,
+        epoch: circle.epoch,
+        admins: Array.from(circle.admins),
+        members: circleMemberList(circle)
+      };
+    }
+
+    function hydrateCircleFromMembership(state) {
+      return {
+        id: state.circle_id,
+        name: state.name || "Closed Circle",
+        epoch: state.epoch || 1,
+        admins: new Set(state.admins || []),
+        members: new Set(state.members || [])
+      };
+    }
+
+    async function createGroupEpochKey() {
+      return crypto.subtle.generateKey(
+        { name: "AES-GCM", length: 256 },
+        true,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function exportAesKey(key) {
+      const raw = await crypto.subtle.exportKey("raw", key);
+      return b64(raw);
+    }
+
+    async function importAesKey(rawB64) {
+      return crypto.subtle.importKey(
+        "raw",
+        unb64(rawB64),
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function deriveDeviceWrapKey(peerJwk) {
+      await ensureKeyPair();
+      const peerPublicKey = await crypto.subtle.importKey(
+        "jwk",
+        peerJwk,
+        { name: "ECDH", namedCurve: "P-256" },
+        false,
+        []
+      );
+      const sharedBits = await crypto.subtle.deriveBits(
+        { name: "ECDH", public: peerPublicKey },
+        privateKey,
+        256
+      );
+      const material = await crypto.subtle.importKey(
+        "raw",
+        sharedBits,
+        "HKDF",
+        false,
+        ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        {
+          name: "HKDF",
+          hash: "SHA-256",
+          salt: new Uint8Array([]),
+          info: enc.encode("cipherlane-circle-epoch-wrap")
+        },
+        material,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function wrapEpochKeyForDevice(epochKey, peerJwk) {
+      const wrapKey = await deriveDeviceWrapKey(peerJwk);
+      const rawEpochKey = await exportAesKey(epochKey);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ciphertext = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        wrapKey,
+        enc.encode(rawEpochKey)
+      );
+      return { iv: b64(iv), ciphertext: b64(ciphertext) };
+    }
+
+    async function unwrapEpochKeyFromDevice(payload, peerJwk) {
+      const wrapKey = await deriveDeviceWrapKey(peerJwk);
+      const plain = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: unb64(payload.iv) },
+        wrapKey,
+        unb64(payload.ciphertext)
+      );
+      return importAesKey(dec.decode(plain));
+    }
+
+    async function encryptWithKey(key, text) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const cipher = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        enc.encode(text)
+      );
+      return { iv: b64(iv), ciphertext: b64(cipher) };
+    }
+
+    async function decryptWithKey(key, payload) {
+      const plain = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: unb64(payload.iv) },
+        key,
+        unb64(payload.ciphertext)
+      );
+      return dec.decode(plain);
     }
 
     function canonicalJson(value) {
@@ -1944,11 +2120,9 @@
     function handleNewChatOption(option) {
       const typedName = dom.searchChat.value.trim() || dom.peer.value.trim();
 
-      if (option === "group") {
-        addMessage(
-          "Group chat is not supported yet. Use New contact to start a secure one-to-one chat.",
-          "system"
-        );
+      if (option === "group" || option === "community") {
+        dom.circleName.focus();
+        setCircleStatus("Closed Circle MVP is available in Step 3. Create a circle, invite a member, then approve their join request.");
         return;
       }
 
@@ -2522,6 +2696,144 @@
       return true;
     }
 
+    async function createCircle() {
+      const me = dom.me.value.trim();
+      const name = dom.circleName.value.trim() || "Closed Circle";
+      if (!me) {
+        setCircleStatus("Set your identity in the You field before creating a circle.");
+        return;
+      }
+
+      const circleId = `circle_${createMessageId()}`;
+      const epochKey = await createGroupEpochKey();
+      const circle = {
+        id: circleId,
+        name,
+        epoch: 1,
+        admins: new Set([me]),
+        members: new Set([me])
+      };
+      circles.set(circleId, circle);
+      circleEpochKeys.set(circleId, epochKey);
+      activeCircleId = circleId;
+      chatMode = "circle";
+      updateChatCard();
+      setCircleStatus(`Circle created: ${name}. Invite an online member next.`);
+    }
+
+    function useCircleMode() {
+      if (!activeCircleId || !circles.has(activeCircleId)) {
+        setCircleStatus("Create or join a circle first.");
+        return;
+      }
+      chatMode = "circle";
+      updateChatCard();
+      setCircleStatus(`Circle chat active: ${circles.get(activeCircleId).name}.`);
+    }
+
+    async function inviteCircleMember() {
+      const me = dom.me.value.trim();
+      const member = dom.circleMember.value.trim() || dom.peer.value.trim();
+      if (!me || !member) {
+        setCircleStatus("Set your identity and the member identity before inviting.");
+        return;
+      }
+      if (!activeCircleId || !circles.has(activeCircleId)) {
+        setCircleStatus("Create a circle before inviting members.");
+        return;
+      }
+
+      await ensureKeyPair();
+      const circle = circles.get(activeCircleId);
+      const sent = sendJson({
+        type: "circle_invite",
+        from: me,
+        to: member,
+        circle_id: activeCircleId,
+        invite_id: createMessageId(),
+        payload: {
+          circle_name_hint: circle.name,
+          admin_identity_id: me
+        },
+        public_key: publicJwk
+      });
+      if (sent) {
+        setCircleStatus(`Circle invite sent to ${member}.`);
+      }
+    }
+
+    async function approveCircleJoin() {
+      const me = dom.me.value.trim();
+      if (!pendingCircleJoin) {
+        setCircleStatus("No pending circle join request to approve.");
+        return;
+      }
+      const circle = circles.get(pendingCircleJoin.circle_id);
+      if (!circle) {
+        setCircleStatus("Pending request is for a circle not available in this browser.");
+        return;
+      }
+
+      circle.members.add(pendingCircleJoin.from);
+      circle.epoch += 1;
+      const epochKey = await createGroupEpochKey();
+      circleEpochKeys.set(circle.id, epochKey);
+      const membership = circleMembershipState(circle);
+      const wrappedKey = await wrapEpochKeyForDevice(epochKey, pendingCircleJoin.device_public_key);
+      const sent = sendJson({
+        type: "circle_join_approved",
+        from: me,
+        to: pendingCircleJoin.from,
+        circle_id: circle.id,
+        epoch: circle.epoch,
+        membership_state: membership,
+        public_key: publicJwk,
+        encrypted_epoch_key: wrappedKey
+      });
+      if (sent) {
+        setCircleStatus(`${pendingCircleJoin.from} approved for ${circle.name}. Epoch ${circle.epoch} active.`);
+        pendingCircleJoin = null;
+        updateChatCard();
+      }
+    }
+
+    async function sendCircleMessage(text) {
+      const me = dom.me.value.trim();
+      const circle = circles.get(activeCircleId);
+      const epochKey = circleEpochKeys.get(activeCircleId);
+      if (!me || !circle || !epochKey) {
+        setCircleStatus("Circle chat is not ready.");
+        return false;
+      }
+
+      const recipients = circleMemberList(circle).filter((member) => member !== me);
+      if (recipients.length === 0) {
+        setCircleStatus("Invite and approve a member before sending circle messages.");
+        return false;
+      }
+
+      const payload = await encryptWithKey(epochKey, text);
+      const messageId = createMessageId();
+      let sentAny = false;
+      for (const recipient of recipients) {
+        const sent = sendJson({
+          type: "circle_chat",
+          msg_id: messageId,
+          from: me,
+          to: recipient,
+          circle_id: activeCircleId,
+          epoch: circle.epoch,
+          membership_hash: await sha256Hex(canonicalJson(circleMembershipState(circle))),
+          content: payload
+        });
+        sentAny = sentAny || sent;
+      }
+      if (sentAny) {
+        addMessage(text, "you", `${me} in ${circle.name}`, messageId);
+      }
+      return sentAny;
+    }
+
     async function startSecure() {
       const me = dom.me.value.trim();
       const peer = dom.peer.value.trim();
@@ -2532,6 +2844,7 @@
       }
 
       currentPeer = peer;
+      chatMode = "direct";
       peerIdentity = "";
       aesKey = null;
       activeVerificationCode = "";
@@ -2556,6 +2869,15 @@
       const text = dom.message.value.trim();
 
       if (!text) {
+        return;
+      }
+
+      if (chatMode === "circle") {
+        const sent = await sendCircleMessage(text);
+        if (sent) {
+          dom.message.value = "";
+          updateSendButton();
+        }
         return;
       }
 
@@ -2600,8 +2922,88 @@
         return;
       }
 
+      if (data.type === "circle_invite") {
+        const me = dom.me.value.trim();
+        await ensureKeyPair();
+        dom.circleMember.value = data.from || "";
+        setCircleStatus(`Circle invite received from ${data.from}: ${data.payload?.circle_name_hint || "Closed Circle"}. Sending join request.`);
+        sendJson({
+          type: "circle_join_request",
+          from: me,
+          to: data.from,
+          circle_id: data.circle_id,
+          device_id: localSessionId,
+          identity_id: dom.identityId.value.trim(),
+          identity_public_key: publicJwk,
+          device_public_key: publicJwk,
+          invite_id: data.invite_id || "",
+          public_key: publicJwk
+        });
+        return;
+      }
+
+      if (data.type === "circle_join_request") {
+        pendingCircleJoin = data;
+        dom.circleMember.value = data.from || "";
+        setCircleStatus(`Join request from ${data.from}. Compare identity, then click Approve Join.`);
+        return;
+      }
+
+      if (data.type === "circle_join_approved") {
+        const epochKey = await unwrapEpochKeyFromDevice(data.encrypted_epoch_key, data.public_key);
+        const circle = hydrateCircleFromMembership(data.membership_state || {});
+        circles.set(circle.id, circle);
+        circleEpochKeys.set(circle.id, epochKey);
+        activeCircleId = circle.id;
+        chatMode = "circle";
+        dom.circleName.value = circle.name;
+        updateChatCard();
+        setCircleStatus(`Joined ${circle.name}. Epoch ${circle.epoch} key installed.`);
+        return;
+      }
+
+      if (data.type === "circle_epoch_update") {
+        if (!data.encrypted_epoch_key || !data.public_key || !data.membership_state) {
+          setCircleStatus("Received incomplete circle epoch update.");
+          return;
+        }
+        const epochKey = await unwrapEpochKeyFromDevice(data.encrypted_epoch_key, data.public_key);
+        const circle = hydrateCircleFromMembership(data.membership_state);
+        circles.set(circle.id, circle);
+        circleEpochKeys.set(circle.id, epochKey);
+        activeCircleId = circle.id;
+        chatMode = "circle";
+        updateChatCard();
+        setCircleStatus(`Circle epoch updated: ${circle.name} epoch ${circle.epoch}.`);
+        return;
+      }
+
+      if (data.type === "circle_chat") {
+        const circle = circles.get(data.circle_id);
+        const epochKey = circleEpochKeys.get(data.circle_id);
+        if (!circle || !epochKey) {
+          setCircleStatus("Received circle message before circle key setup.");
+          return;
+        }
+        if (data.epoch !== circle.epoch) {
+          setCircleStatus("Rejected circle message from a stale or unknown epoch.");
+          return;
+        }
+        try {
+          const text = await decryptWithKey(epochKey, data.content);
+          activeCircleId = data.circle_id;
+          chatMode = "circle";
+          updateChatCard();
+          addMessage(text, "peer", `${data.from || "member"} in ${circle.name}`);
+        } catch (err) {
+          setCircleStatus("Failed to decrypt circle message.");
+        }
+        return;
+      }
+
       if (data.type === "key_exchange") {
         currentPeer = data.from;
+        chatMode = "direct";
         peerIdentity = data.identity_id || "";
         aesKey = null;
         activeVerificationCode = "";
@@ -2632,6 +3034,7 @@
 
       if (data.type === "key_exchange_response") {
         currentPeer = data.from;
+        chatMode = "direct";
         peerIdentity = data.identity_id || "";
         aesKey = null;
         activeVerificationCode = "";
@@ -2669,6 +3072,7 @@
       }
 
       if (data.type === "chat") {
+        chatMode = "direct";
         if (!aesKey) {
           addMessage("Received encrypted message before key setup.", "system");
           return;
@@ -2862,6 +3266,16 @@
     dom.copyShare.addEventListener("click", () => {
       copyShareLink().catch(() => addMessage("Could not copy link.", "system"));
     });
+    dom.createCircle.addEventListener("click", () => {
+      createCircle().catch(() => setCircleStatus("Could not create circle."));
+    });
+    dom.useCircleMode.addEventListener("click", useCircleMode);
+    dom.inviteCircleMember.addEventListener("click", () => {
+      inviteCircleMember().catch(() => setCircleStatus("Could not invite circle member."));
+    });
+    dom.approveCircleJoin.addEventListener("click", () => {
+      approveCircleJoin().catch(() => setCircleStatus("Could not approve circle join."));
+    });
     dom.generateSeed.addEventListener("click", () => {
       generateSeedIdentity().catch(() => addMessage("Could not generate seed.", "system"));
     });
@@ -2918,6 +3332,9 @@
     });
     dom.message.addEventListener("input", updateSendButton);
     dom.message.addEventListener("input", () => {
+      if (chatMode === "circle") {
+        return;
+      }
       if (!currentPeer || !dom.me.value.trim()) {
         return;
       }

@@ -16,6 +16,13 @@ ALLOWED_TYPES = {
     "chat_received",
     "chat_read",
     "typing",
+    "circle_invite",
+    "circle_join_request",
+    "circle_join_approved",
+    "circle_epoch_update",
+    "circle_chat",
+    "device_join_request",
+    "device_join_approved",
 }
 
 

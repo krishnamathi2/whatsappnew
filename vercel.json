@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/icons/:path*",
+      "destination": "/web/icons/:path*"
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "destination": "/web/manifest.webmanifest"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/web/sw.js"
+    },
+    {
+      "source": "/qrcode.min.js",
+      "destination": "/web/qrcode.min.js"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/web/index.html"
+    }
+  ]
+}

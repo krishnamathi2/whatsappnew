@@ -1,13 +1,13 @@
 # CipherLane Messenger User Guide
 
-CipherLane Messenger is a browser-based encrypted chat app. It uses a local websocket relay to pass messages between users, then encrypts chat content in the browser with an ECDH key exchange and AES-GCM.
+CipherLane Messenger is a browser-based encrypted chat app. The web app can be opened from the Vercel deployment or served locally. It uses a websocket relay to pass messages between users, then encrypts chat content in the browser with an ECDH key exchange and AES-GCM.
 
 ## What You Need
 
 - A modern browser such as Microsoft Edge or Chrome.
-- Python with the `websockets` package installed.
-- Access to the `web` folder in this project.
-- A relay URL. For local testing, use `ws://localhost:8765`.
+- The CipherLane Vercel app URL, or access to the local `web` folder.
+- A relay URL. For local testing, use `ws://localhost:8765`. For the Vercel app, use a public secure relay URL such as `wss://your-relay.example.com`.
+- Python with the `websockets` package installed if you are running the relay locally.
 
 Install the Python dependency if needed:
 
@@ -15,7 +15,19 @@ Install the Python dependency if needed:
 pip install -r requirements.txt
 ```
 
-## Start the App
+## Use the Vercel App
+
+Open the deployed CipherLane Vercel URL in a modern browser.
+
+In the app:
+
+1. Set `Server URL` to your websocket relay URL.
+2. Use `wss://...` for a hosted relay.
+3. Use `ws://localhost:8765` only when the relay is running on the same computer as the browser.
+
+The Vercel deployment hosts the browser app only. It does not run the Python websocket relay from this repository. For real messaging between different devices, the relay must be deployed somewhere reachable over TLS and entered in the `Server URL` field.
+
+## Run Locally
 
 Open two PowerShell windows in the project folder.
 

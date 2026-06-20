@@ -1580,6 +1580,9 @@
         <button id="onboardingHowCreateSeedLink" class="inlineLinkBtn" type="button">How to create the seed?</button>
         <p id="onboardingSeedActionStatus" class="seedActionStatus" aria-live="polite"></p>
         <div class="configStepForm">
+          <label for="onboardingRestorePhrase">Restore phrase</label>
+          <input id="onboardingRestorePhrase" class="seedField" placeholder="Paste your 12-word recovery phrase" />
+          <button id="onboardingRestoreSeedLink" class="secondaryBtn" type="button">Restore Seed Phrase</button>
           <label for="onboardingCfgMe">You (from seed identity)</label>
           <input id="onboardingCfgMe" placeholder="Derived identity or display name" />
           <label for="onboardingCfgServer">Server URL</label>
@@ -1710,6 +1713,8 @@
       onboardingWhatIsSeedLink: document.getElementById("onboardingWhatIsSeedLink"),
       onboardingHowCreateSeedLink: document.getElementById("onboardingHowCreateSeedLink"),
       onboardingSeedActionStatus: document.getElementById("onboardingSeedActionStatus"),
+      onboardingRestorePhrase: document.getElementById("onboardingRestorePhrase"),
+      onboardingRestoreSeedLink: document.getElementById("onboardingRestoreSeedLink"),
       onboardingContinue: document.getElementById("onboardingContinue"),
       onboardingClose: document.getElementById("onboardingClose"),
       onboardingDontShow: document.getElementById("onboardingDontShow"),
@@ -2134,6 +2139,20 @@
       dom.onboardingCfgMe.value = dom.identityId.value.trim();
       dom.onboardingSeedActionStatus.textContent = `Seed generated. Identity set to ${dom.identityId.value.trim()}.`;
       dom.onboardingGenerateSeedLink.disabled = false;
+      dom.onboardingCfgMe.focus();
+    }
+
+    async function restoreSeedFromConfigStep() {
+      const phrase = normalizePhrase(dom.onboardingRestorePhrase.value);
+      if (!phrase || phrase.split(" ").length < 12) {
+        dom.onboardingSeedActionStatus.textContent = "Paste your 12-word recovery phrase first.";
+        return;
+      }
+
+      dom.seedPhrase.value = phrase;
+      await deriveIdentityFromPhrase(phrase);
+      dom.onboardingCfgMe.value = dom.identityId.value.trim();
+      dom.onboardingSeedActionStatus.textContent = `Seed restored. Identity set to ${dom.identityId.value.trim()}.`;
       dom.onboardingCfgMe.focus();
     }
 
@@ -2767,6 +2786,19 @@
         dom.onboardingGenerateSeedLink.disabled = false;
         dom.onboardingSeedActionStatus.textContent = "Could not generate seed. Try again.";
       });
+    });
+    dom.onboardingRestoreSeedLink.addEventListener("click", () => {
+      restoreSeedFromConfigStep().catch(() => {
+        dom.onboardingSeedActionStatus.textContent = "Could not restore seed. Check the recovery phrase.";
+      });
+    });
+    dom.onboardingRestorePhrase.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        restoreSeedFromConfigStep().catch(() => {
+          dom.onboardingSeedActionStatus.textContent = "Could not restore seed. Check the recovery phrase.";
+        });
+      }
     });
     dom.onboardingWhatIsSeedLink.addEventListener("click", openSeedInfo);
     dom.onboardingHowCreateSeedLink.addEventListener("click", openSeedCreateInfo);

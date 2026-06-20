@@ -155,22 +155,34 @@
   <main>
     <header>
       <h1>CipherLane Messenger User Guide</h1>
-      <p class="lead">CipherLane Messenger is a browser-based encrypted chat app. It uses a local websocket relay to pass messages between users, then encrypts chat content in the browser with an ECDH key exchange and AES-GCM.</p>
+      <p class="lead">CipherLane Messenger is a browser-based encrypted chat app. The web app can be opened from the Vercel deployment or served locally. It uses a websocket relay to pass messages between users, then encrypts chat content in the browser with an ECDH key exchange and AES-GCM.</p>
     </header>
 
     <section>
       <h2>What You Need</h2>
       <ul>
         <li>A modern browser such as Microsoft Edge or Chrome.</li>
-        <li>Python with the <code>websockets</code> package installed.</li>
-        <li>Access to the <code>web</code> folder in this project.</li>
-        <li>A relay URL. For local testing, use <code>ws://localhost:8765</code>.</li>
+        <li>The CipherLane Vercel app URL, or access to the local <code>web</code> folder.</li>
+        <li>A relay URL. For local testing, use <code>ws://localhost:8765</code>. For the Vercel app, use a public secure relay URL such as <code>wss://your-relay.example.com</code>.</li>
+        <li>Python with the <code>websockets</code> package installed if you are running the relay locally.</li>
       </ul>
       <pre><code>pip install -r requirements.txt</code></pre>
     </section>
 
     <section>
-      <h2>Start the App</h2>
+      <h2>Use the Vercel App</h2>
+      <p>Open the deployed CipherLane Vercel URL in a modern browser.</p>
+      <p>In the app:</p>
+      <ol>
+        <li>Set <code>Server URL</code> to your websocket relay URL.</li>
+        <li>Use <code>wss://...</code> for a hosted relay.</li>
+        <li>Use <code>ws://localhost:8765</code> only when the relay is running on the same computer as the browser.</li>
+      </ol>
+      <p class="note">The Vercel deployment hosts the browser app only. It does not run the Python websocket relay from this repository. For real messaging between different devices, the relay must be deployed somewhere reachable over TLS and entered in the <code>Server URL</code> field.</p>
+    </section>
+
+    <section>
+      <h2>Run Locally</h2>
       <p>Open two PowerShell windows in the project folder.</p>
       <p>In the first window, start the websocket relay:</p>
       <pre><code>python server.py</code></pre>

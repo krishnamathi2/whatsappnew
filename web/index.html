@@ -4044,11 +4044,8 @@
     dom.onboardingContinue.addEventListener("click", () => continueFromOnboarding());
     dom.onboardingClose.addEventListener("click", () => closeOnboarding());
     function enterMessengerFromLanding() {
-      dom.appShell.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (window.__cipherLaneShouldOpenOnboarding) {
-        openOnboarding();
-        window.__cipherLaneShouldOpenOnboarding = false;
-      }
+      openOnboarding();
+      window.__cipherLaneShouldOpenOnboarding = false;
     }
 
     dom.enterApp.addEventListener("click", enterMessengerFromLanding);

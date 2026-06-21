@@ -42,10 +42,43 @@
         linear-gradient(180deg, #05080b 0, #081015 100%);
     }
 
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 5;
+      width: 270px;
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: #151617;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 18px 0 54px rgba(5, 7, 12, 0.24);
+    }
+
+    .sidebar a {
+      min-height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
     .hero {
       position: relative;
-      width: min(1180px, 100vw);
+      width: min(1180px, calc(100vw - 270px));
       min-height: min(700px, 100vh);
+      margin-left: 270px;
       display: grid;
       place-items: center;
       overflow: hidden;
@@ -215,9 +248,18 @@
     @media (max-width: 760px) {
       body {
         overflow: auto;
+        display: block;
+      }
+
+      .sidebar {
+        position: static;
+        width: auto;
+        min-height: auto;
       }
 
       .hero {
+        width: 100%;
+        margin-left: 0;
         min-height: 100vh;
       }
 
@@ -249,6 +291,11 @@
   </style>
 </head>
 <body>
+  <nav class="sidebar" aria-label="CipherLane navigation">
+    <a id="signin" href="#preview">Sign in</a>
+    <a href="#preview">Tech Preview</a>
+  </nav>
+
   <main class="hero" aria-label="CipherLane technology preview">
     <div class="chart" aria-hidden="true">
       <span class="candle" style="--x: 0%; --y: 52%; --h: 116px; --c: var(--blue);"></span>
@@ -267,7 +314,7 @@
       <span class="candle" style="--x: 96%; --y: 33%; --h: 140px; --c: var(--cyan);"></span>
     </div>
 
-    <section class="content">
+    <section id="preview" class="content">
       <div class="avatar">CL</div>
       <h1>Privacy Through Time</h1>
       <p class="byline"><strong>CipherLane Team</strong> on 21 Jun 2026</p>

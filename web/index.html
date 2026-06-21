@@ -1254,7 +1254,7 @@
 
     .landingPage {
       min-height: 100vh;
-      padding-left: 390px;
+      padding-left: 320px;
       background:
         radial-gradient(circle at 58% 18%, rgba(55, 121, 255, 0.18), transparent 34%),
         radial-gradient(circle at 78% 58%, rgba(0, 168, 132, 0.16), transparent 30%),
@@ -1333,11 +1333,11 @@
       position: fixed;
       inset: 0 auto 0 0;
       z-index: 60;
-      width: 390px;
-      padding: 30px 22px 20px;
+      width: 320px;
+      padding: 32px 22px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 12px;
       overflow-y: auto;
       color: #f7f8fb;
       background: #151617;
@@ -1345,185 +1345,25 @@
       box-shadow: 18px 0 54px rgba(5, 7, 12, 0.18);
     }
 
-    .sidebarTop {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-    }
-
-    .sidebarBrand {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      color: #5f86ff;
-      font-size: 24px;
-      line-height: 1;
-      font-weight: 900;
-      text-decoration: none;
-    }
-
-    .sidebarBrandMark {
-      width: 34px;
-      height: 34px;
-      border-radius: 12px;
-      display: inline-grid;
-      place-items: center;
-      color: #ffffff;
-      background: linear-gradient(135deg, #3659ff, #00a884);
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .sidebarTools {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sidebarTool {
-      width: 32px;
-      height: 32px;
-      border: 0;
-      border-radius: 10px;
-      display: grid;
-      place-items: center;
-      color: #c7cad2;
-      background: transparent;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .sidebarTool:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #ffffff;
-    }
-
-    .sidebarPrimary {
+    .sidebarLink {
       width: 100%;
-      min-height: 52px;
+      min-height: 44px;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 30px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
+      justify-content: flex-start;
       color: #ffffff;
-      background: #484b51;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 12px 30px rgba(0, 0, 0, 0.18);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0 14px;
+      text-decoration: none;
       font-size: 16px;
       font-weight: 800;
       cursor: pointer;
     }
 
-    .sidebarPrimary:hover {
-      background: #555960;
-    }
-
-    .sidebarPrimaryIcon {
-      width: 22px;
-      height: 22px;
-      border: 2px solid currentColor;
-      border-radius: 50%;
-      display: inline-grid;
-      place-items: center;
-      font-size: 13px;
-      line-height: 1;
-    }
-
-    .sidebarHistory {
-      display: grid;
-      gap: 24px;
-    }
-
-    .historyGroup {
-      display: grid;
-      gap: 12px;
-    }
-
-    .historyTitle {
-      margin: 0;
-      color: #b9cfff;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .historyList {
-      display: grid;
-      gap: 8px;
-    }
-
-    .historyList a,
-    .historyList button {
-      min-height: 28px;
-      border: 0;
-      border-radius: 10px;
-      padding: 5px 10px;
-      color: #f4f4f6;
-      background: transparent;
-      text-align: left;
-      text-decoration: none;
-      font: inherit;
-      font-size: 15px;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      cursor: pointer;
-    }
-
-    .historyList a:hover,
-    .historyList button:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .historyMuted {
-      color: rgba(244, 244, 246, 0.48) !important;
-    }
-
-    .sidebarProfile {
-      margin-top: auto;
-      min-height: 58px;
-      border: 0;
-      border-radius: 18px;
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: #ebedf3;
-      background: transparent;
-      font-size: 15px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .sidebarProfile:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .profileAvatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: inline-grid;
-      place-items: center;
-      color: #ffffff;
-      background: #5b63c9;
-      font-size: 17px;
-      font-weight: 900;
-    }
-
-    .profileName {
-      min-width: 0;
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .profileMenu {
-      color: #b6bac4;
-      letter-spacing: 2px;
+    .sidebarLink:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .landingArticle {
@@ -2037,48 +1877,8 @@
 
     <div class="landingLayout">
       <aside class="landingSidebar" aria-label="Landing page sidebar">
-        <div class="sidebarTop">
-          <a class="sidebarBrand" href="#landingPage" aria-label="CipherLane home">
-            <span class="sidebarBrandMark">C</span>
-            <span>CipherLane</span>
-          </a>
-          <div class="sidebarTools" aria-label="Sidebar tools">
-            <button class="sidebarTool" type="button" aria-label="Search">&#128269;</button>
-            <button class="sidebarTool" type="button" aria-label="Collapse sidebar">&#9776;</button>
-          </div>
-        </div>
-
-        <button class="sidebarPrimary" type="button" data-scroll-app>
-          <span class="sidebarPrimaryIcon">+</span>
-          <span>Open Messenger</span>
-        </button>
-
-        <nav class="sidebarHistory" aria-label="CipherLane sections">
-          <section class="historyGroup" aria-labelledby="historyPreviewTitle">
-            <p id="historyPreviewTitle" class="historyTitle">Preview</p>
-            <div class="historyList">
-              <a href="#privacyTitle">Private groups without server authority</a>
-              <a href="#trustTitle">Member-controlled trust and recovery</a>
-              <a href="#circleTitle">Closed-circle MVP scope</a>
-            </div>
-          </section>
-
-          <section class="historyGroup" aria-labelledby="historyControlsTitle">
-            <p id="historyControlsTitle" class="historyTitle">Controls</p>
-            <div class="historyList">
-              <button type="button" data-scroll-app>Seed identity setup</button>
-              <button type="button" data-scroll-app>Verified sessions</button>
-              <button type="button" data-scroll-app>Private circle approvals</button>
-              <a class="historyMuted" href="#landingPage">CipherLane technology preview</a>
-            </div>
-          </section>
-        </nav>
-
-        <button class="sidebarProfile" type="button" data-scroll-app aria-label="Open CipherLane messenger">
-          <span class="profileAvatar">CL</span>
-          <span class="profileName">CipherLane Messenger</span>
-          <span class="profileMenu">...</span>
-        </button>
+        <button class="sidebarLink" type="button" data-scroll-app>Sign in</button>
+        <a class="sidebarLink" href="#landingTitle">Tech Preview</a>
       </aside>
 
       <article class="landingArticle">

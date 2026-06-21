@@ -1254,7 +1254,9 @@
 
     .landingPage {
       min-height: 100vh;
-      background: #ffffff;
+      background:
+        linear-gradient(180deg, #f7f9ff 0, #ffffff 370px, #ffffff 100%),
+        #ffffff;
       color: #000000;
       font-family: Arial, Helvetica, sans-serif;
     }
@@ -1267,7 +1269,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #e8e8ee;
+      border-bottom: 1px solid rgba(54, 89, 255, 0.12);
       font-size: 24px;
       line-height: 1.2;
     }
@@ -1286,14 +1288,14 @@
     .landingMark {
       width: 62px;
       height: 62px;
-      border-radius: 50%;
+      border-radius: 22px;
       display: inline-grid;
       place-items: center;
-      color: #3659ff;
-      background: #ffffff;
-      border: 4px solid #3659ff;
-      box-shadow: 0 0 0 4px #ffffff, 0 0 0 7px #3659ff;
-      font-size: 1.15rem;
+      color: #ffffff;
+      background: linear-gradient(135deg, #3659ff, #00a884);
+      border: 0;
+      box-shadow: 0 14px 34px rgba(54, 89, 255, 0.24);
+      font-size: 1.08rem;
       font-weight: 900;
     }
 
@@ -1308,17 +1310,39 @@
       border: 0;
       padding: 0;
       background: transparent;
-      color: #111111;
+      color: #182033;
       font: inherit;
       font-weight: 400;
       text-decoration: none;
       cursor: pointer;
     }
 
+    .landingNavLinks a:hover,
+    .landingNavLinks button:hover {
+      color: #315cff;
+    }
+
     .landingArticle {
-      width: min(826px, calc(100% - 48px));
+      width: min(884px, calc(100% - 48px));
       margin: 66px auto 0;
       padding-bottom: 88px;
+    }
+
+    .landingArticle header {
+      position: relative;
+      padding: 26px 0 18px;
+    }
+
+    .landingArticle header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 96px;
+      height: 5px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3659ff, #00a884);
+      transform: translateX(-50%);
     }
 
     .landingAuthor {
@@ -1337,7 +1361,10 @@
       display: grid;
       place-items: center;
       color: #ffffff;
-      background: linear-gradient(135deg, #00a884, #3659ff);
+      background:
+        linear-gradient(135deg, rgba(0, 168, 132, 0.92), rgba(54, 89, 255, 0.92)),
+        radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.55), transparent 28%);
+      box-shadow: 0 18px 50px rgba(49, 92, 255, 0.22);
       font-size: 1.8rem;
       font-weight: 900;
     }
@@ -1375,11 +1402,40 @@
       font-weight: 700;
     }
 
+    .landingTrustStrip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: -28px 0 58px;
+    }
+
+    .landingTrustStrip span {
+      border: 1px solid rgba(49, 92, 255, 0.18);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: #18305f;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 10px 24px rgba(29, 45, 89, 0.08);
+      font-size: 15px;
+      font-weight: 800;
+    }
+
     .landingLead {
       margin: 0 0 54px;
       color: #000000;
       font-size: 28px;
       line-height: 1.45;
+      text-wrap: pretty;
+    }
+
+    .landingLead::first-letter {
+      float: left;
+      margin: 8px 10px 0 0;
+      color: #315cff;
+      font-size: 64px;
+      line-height: 0.78;
+      font-weight: 900;
     }
 
     .landingActions {
@@ -1392,24 +1448,32 @@
     .landingActions button,
     .landingActions a {
       min-width: 120px;
-      border: 1px solid #d6d7df;
+      border: 1px solid rgba(49, 92, 255, 0.22);
       border-radius: 999px;
-      padding: 11px 18px;
+      padding: 13px 22px;
       text-decoration: none;
       text-align: center;
       font-size: 16px;
       font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
     }
 
     .landingActions button {
       color: #ffffff;
-      background: #3659ff;
+      background: linear-gradient(135deg, #3659ff, #2448df);
+      box-shadow: 0 16px 34px rgba(49, 92, 255, 0.22);
       cursor: pointer;
     }
 
     .landingActions a {
       color: #3659ff;
       background: #ffffff;
+    }
+
+    .landingActions button:hover,
+    .landingActions a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(49, 92, 255, 0.16);
     }
 
     .landingSectionTitle {
@@ -1419,20 +1483,34 @@
       line-height: 1.35;
       letter-spacing: 0;
       font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .landingSectionTitle::before {
+      content: "";
+      width: 34px;
+      height: 4px;
+      border-radius: 999px;
+      background: #00a884;
     }
 
     .landingText {
       margin: 0 0 28px;
-      color: #000000;
+      color: #101828;
       line-height: 1.45;
       font-size: 28px;
+      text-wrap: pretty;
     }
 
     .landingDiagram {
       margin: 32px 0;
-      border: 1px solid #dfe3ea;
-      background: #f7f8fb;
+      border: 1px solid rgba(49, 92, 255, 0.14);
+      border-radius: 18px;
+      background: #f8fbff;
       overflow-x: auto;
+      box-shadow: 0 18px 46px rgba(27, 43, 91, 0.09);
     }
 
     .landingDiagram table {
@@ -1441,6 +1519,12 @@
       font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
       font-size: 13px;
       color: #2b3440;
+    }
+
+    .landingDiagram th {
+      color: #172554;
+      background: rgba(54, 89, 255, 0.07);
+      font-weight: 900;
     }
 
     .landingDiagram th,
@@ -1458,11 +1542,14 @@
     .landingPullout {
       margin: 34px 0;
       padding: 22px 26px;
-      border-left: 5px solid #3659ff;
-      background: #f5f7ff;
+      border: 1px solid rgba(54, 89, 255, 0.18);
+      border-left: 6px solid #3659ff;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f5f7ff, #eefbf6);
       color: #172554;
       font-size: 24px;
       line-height: 1.5;
+      box-shadow: 0 14px 36px rgba(27, 43, 91, 0.08);
     }
 
     .landingList {
@@ -1516,8 +1603,8 @@
       .landingMark {
         width: 34px;
         height: 34px;
-        border-width: 2px;
-        box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #3659ff;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(54, 89, 255, 0.18);
         font-size: 0.8rem;
       }
 
@@ -1553,10 +1640,26 @@
         font-size: 1.2rem;
       }
 
+      .landingTrustStrip {
+        margin: -12px 0 34px;
+        justify-content: flex-start;
+      }
+
+      .landingTrustStrip span {
+        font-size: 0.86rem;
+      }
+
       .landingLead,
       .landingText,
       .landingList {
         font-size: 1.18rem;
+      }
+
+      .landingLead::first-letter {
+        float: none;
+        margin: 0;
+        font-size: inherit;
+        line-height: inherit;
       }
 
       .landingSectionTitle {
@@ -1611,6 +1714,11 @@
         <h1 id="landingTitle" class="landingTitle">Technology Preview: CipherLane Private Circle System</h1>
         <p class="landingByline"><a href="#landingPage">CipherLane Team</a> on 21 Jun 2026</p>
         <p class="landingTagline">Where privacy is built into every conversation.</p>
+        <div class="landingTrustStrip" aria-label="CipherLane privacy advantages">
+          <span>Seed identity</span>
+          <span>Verified sessions</span>
+          <span>Member-approved circles</span>
+        </div>
       </header>
 
       <p class="landingLead">Groups are inherently social, and a private messenger needs to protect more than message text. A group name, member list, invite history, recovery state, and trust status can reveal sensitive relationships even when every chat bubble is encrypted.</p>

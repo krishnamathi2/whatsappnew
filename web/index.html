@@ -37,18 +37,15 @@
       margin: 0;
       min-height: 100%;
       font-family: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 15% 10%, rgba(0, 168, 132, 0.18), transparent 30%),
-        radial-gradient(circle at 80% 90%, rgba(37, 211, 102, 0.15), transparent 35%),
-        linear-gradient(140deg, #091218, #0b141a 55%, #081015);
-      color: var(--ink);
-      padding: 14px;
+      background: #ffffff;
+      color: #111827;
+      padding: 0;
     }
 
     .shell {
       width: min(1360px, 100%);
       height: min(94vh, 920px);
-      margin: 0 auto;
+      margin: 32px auto;
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid var(--line);
@@ -1256,159 +1253,200 @@
     }
 
     .landingPage {
-      width: min(1360px, 100%);
-      margin: 0 auto 18px;
-      color: var(--ink);
+      min-height: 100vh;
+      background: #ffffff;
+      color: #121212;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
     }
 
-    .landingHero {
-      min-height: min(82vh, 760px);
-      display: grid;
-      align-content: center;
-      gap: 28px;
-      padding: clamp(28px, 6vw, 72px);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      overflow: hidden;
-      position: relative;
-      background:
-        linear-gradient(rgba(8, 15, 19, 0.62), rgba(8, 15, 19, 0.82)),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='760' viewBox='0 0 1280 760'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%2300a884'/%3E%3Cstop offset='.48' stop-color='%23111b21'/%3E%3Cstop offset='1' stop-color='%2325d366'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='0' dy='24' stdDeviation='24' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='1280' height='760' fill='%2309141a'/%3E%3Cpath d='M0 536C186 454 271 614 432 528c170-91 257-303 459-244 135 40 226 182 389 98v378H0z' fill='url(%23g)' opacity='.36'/%3E%3Cg filter='url(%23s)'%3E%3Crect x='706' y='112' width='426' height='536' rx='26' fill='%23111b21' stroke='%23334a54'/%3E%3Crect x='734' y='148' width='370' height='54' rx='15' fill='%23202c33'/%3E%3Ccircle cx='766' cy='175' r='17' fill='%2325d366'/%3E%3Crect x='795' y='164' width='158' height='10' rx='5' fill='%23d9f7ee' opacity='.9'/%3E%3Crect x='795' y='184' width='104' height='8' rx='4' fill='%239eb1ba'/%3E%3Crect x='760' y='246' width='240' height='58' rx='18' fill='%23202c33'/%3E%3Crect x='832' y='334' width='244' height='58' rx='18' fill='%23005c4b'/%3E%3Crect x='760' y='422' width='282' height='58' rx='18' fill='%23202c33'/%3E%3Crect x='734' y='566' width='370' height='48' rx='16' fill='%230d171d' stroke='%23334a54'/%3E%3C/g%3E%3Cg opacity='.88'%3E%3Ccircle cx='214' cy='196' r='54' fill='%2300a884'/%3E%3Ccircle cx='382' cy='282' r='42' fill='%2325d366'/%3E%3Ccircle cx='254' cy='430' r='46' fill='%239fd9c8'/%3E%3Cpath d='M214 196l168 86-128 148' fill='none' stroke='%23d9f7ee' stroke-width='12' stroke-linecap='round' opacity='.76'/%3E%3Cpath d='M214 196l40 234' fill='none' stroke='%23d9f7ee' stroke-width='12' stroke-linecap='round' opacity='.5'/%3E%3C/g%3E%3C/svg%3E");
-      background-size: cover;
-      background-position: center;
-      box-shadow: var(--shell-shadow);
+    .landingNav {
+      width: min(720px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 22px 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e8e8ee;
+      font-size: 0.74rem;
+      line-height: 1;
     }
 
-    .landingKicker {
-      margin: 0;
-      width: fit-content;
-      border: 1px solid rgba(37, 211, 102, 0.42);
-      border-radius: 999px;
-      padding: 8px 12px;
-      color: #baf5dd;
-      background: rgba(8, 20, 24, 0.72);
-      font-size: 0.82rem;
+    .landingBrand {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #3659ff;
       font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+
+    .landingMark {
+      width: 17px;
+      height: 17px;
+      border-radius: 5px;
+      display: inline-grid;
+      place-items: center;
+      color: #ffffff;
+      background: #3659ff;
+      font-size: 0.58rem;
+      font-weight: 900;
+    }
+
+    .landingNavLinks {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .landingNavLinks a,
+    .landingNavLinks button {
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #111111;
+      font: inherit;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .landingArticle {
+      width: min(520px, calc(100% - 40px));
+      margin: 28px auto 0;
+      padding-bottom: 64px;
+    }
+
+    .landingAuthor {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #767676;
+      font-size: 0.72rem;
+    }
+
+    .landingAvatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #ffffff;
+      background: linear-gradient(135deg, #00a884, #3659ff);
+      font-size: 0.86rem;
+      font-weight: 900;
     }
 
     .landingTitle {
-      margin: 0;
-      max-width: 760px;
-      font-size: clamp(2.4rem, 6vw, 5.6rem);
-      line-height: 0.96;
+      margin: 0 0 6px;
+      color: #050505;
+      font-size: 1.2rem;
+      line-height: 1.25;
       letter-spacing: 0;
+      text-align: center;
     }
 
     .landingLead {
-      margin: 0;
-      max-width: 700px;
-      color: #d8e7ec;
-      font-size: clamp(1rem, 1.8vw, 1.28rem);
-      line-height: 1.6;
+      margin: 28px 0 24px;
+      color: #1e1e1e;
+      font-size: 0.86rem;
+      line-height: 1.76;
     }
 
     .landingActions {
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      max-width: 560px;
+      justify-content: center;
+      gap: 10px;
+      margin: 22px 0 34px;
     }
 
     .landingActions button,
     .landingActions a {
-      width: auto;
-      min-width: 172px;
-      border-radius: 12px;
-      padding: 12px 18px;
+      min-width: 120px;
+      border: 1px solid #d6d7df;
+      border-radius: 999px;
+      padding: 9px 14px;
       text-decoration: none;
       text-align: center;
+      font-size: 0.78rem;
       font-weight: 800;
     }
 
-    .landingActions a {
-      color: #cbf4e8;
-      background: rgba(28, 42, 50, 0.92);
-      border: 1px solid rgba(37, 211, 102, 0.32);
+    .landingActions button {
+      color: #ffffff;
+      background: #3659ff;
+      cursor: pointer;
     }
 
-    .landingBand {
-      padding: 42px 8px 6px;
-      display: grid;
-      gap: 18px;
+    .landingActions a {
+      color: #3659ff;
+      background: #ffffff;
     }
 
     .landingSectionTitle {
-      margin: 0;
-      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      margin: 36px 0 14px;
+      color: #111111;
+      font-size: 1rem;
+      line-height: 1.35;
       letter-spacing: 0;
     }
 
     .landingText {
-      margin: 0;
-      max-width: 860px;
-      color: #b9cbd2;
+      margin: 0 0 16px;
+      color: #1d1d1d;
+      line-height: 1.78;
+      font-size: 0.86rem;
+    }
+
+    .landingDiagram {
+      margin: 20px 0;
+      border: 1px solid #dfe3ea;
+      background: #f7f8fb;
+      overflow-x: auto;
+    }
+
+    .landingDiagram table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.66rem;
+      color: #2b3440;
+    }
+
+    .landingDiagram th,
+    .landingDiagram td {
+      padding: 9px;
+      border-bottom: 1px solid #e4e7ee;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .landingDiagram tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .landingPullout {
+      margin: 22px 0;
+      padding: 15px 18px;
+      border-left: 3px solid #3659ff;
+      background: #f5f7ff;
+      color: #172554;
+      font-size: 0.84rem;
       line-height: 1.65;
-      font-size: 1rem;
     }
 
-    .landingGrid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
+    .landingList {
+      margin: 0 0 18px 18px;
+      padding: 0;
+      color: #1d1d1d;
+      font-size: 0.86rem;
+      line-height: 1.78;
     }
 
-    .landingFeature {
-      min-height: 158px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 18px;
-      background: #111b21;
-    }
-
-    .landingFeature h3 {
-      margin: 0 0 10px;
-      font-size: 1.03rem;
-      color: #e9edef;
-    }
-
-    .landingFeature p {
-      margin: 0;
-      color: #9eb1ba;
-      line-height: 1.55;
-      font-size: 0.94rem;
-    }
-
-    .landingFlow {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 8px;
-      counter-reset: flow;
-    }
-
-    .landingFlow span {
-      border: 1px solid rgba(37, 211, 102, 0.2);
-      border-radius: 8px;
-      padding: 12px;
-      color: #d7fbee;
-      background: #0f1a20;
-      font-size: 0.9rem;
-      line-height: 1.35;
-    }
-
-    .landingFlow span::before {
-      counter-increment: flow;
-      content: counter(flow);
-      display: inline-grid;
-      place-items: center;
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
-      border-radius: 50%;
-      background: #25d366;
-      color: #07150f;
-      font-weight: 900;
+    .landingNote {
+      color: #5f6368;
+      font-size: 0.74rem;
+      line-height: 1.6;
     }
 
     @keyframes configPulse {
@@ -1431,32 +1469,29 @@
         padding: 0;
       }
 
-      .landingPage {
-        margin-bottom: 0;
+      .landingNav {
+        width: calc(100% - 28px);
+        gap: 16px;
+        align-items: flex-start;
       }
 
-      .landingHero {
-        min-height: 92vh;
-        border-radius: 0;
-        padding: 28px 18px;
+      .landingNavLinks {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .landingArticle {
+        width: calc(100% - 32px);
+        margin-top: 24px;
+      }
+
+      .landingTitle {
+        font-size: 1.12rem;
       }
 
       .landingActions {
-        display: grid;
-      }
-
-      .landingActions button,
-      .landingActions a {
-        width: 100%;
-      }
-
-      .landingBand {
-        padding: 32px 16px;
-      }
-
-      .landingGrid,
-      .landingFlow {
-        grid-template-columns: 1fr;
+        flex-direction: column;
       }
 
       .shell {
@@ -1478,45 +1513,84 @@
 </head>
 <body>
   <main id="landingPage" class="landingPage">
-    <section class="landingHero" aria-labelledby="landingTitle">
-      <p class="landingKicker">Private messaging, seed identity, closed circles</p>
-      <h1 id="landingTitle" class="landingTitle">CipherLane Messenger</h1>
-      <p class="landingLead">A browser-based encrypted messenger built around local identity seeds, peer verification, and private circle controls for small trusted groups.</p>
-      <div class="landingActions">
-        <button id="enterApp" type="button">Open Messenger</button>
-        <a href="#privacyTitle">Explore Features</a>
+    <nav class="landingNav" aria-label="CipherLane site navigation">
+      <a class="landingBrand" href="#landingPage" aria-label="CipherLane home">
+        <span class="landingMark">C</span>
+        <span>CipherLane</span>
+      </a>
+      <div class="landingNavLinks">
+        <a href="#privacyTitle">Blog</a>
+        <a href="#trustTitle">Developers</a>
+        <a href="#circleTitle">Private Circles</a>
+        <button id="enterApp" type="button">Open App</button>
       </div>
-    </section>
+    </nav>
 
-    <section class="landingBand" aria-labelledby="privacyTitle">
-      <h2 id="privacyTitle" class="landingSectionTitle">Privacy starts before the first message</h2>
-      <p class="landingText">CipherLane keeps identity, recovery, and chat setup close to the user. The relay passes encrypted traffic, while users control seed recovery, peer verification, and circle access.</p>
-      <div class="landingGrid">
-        <article class="landingFeature">
-          <h3>Seed-based identity</h3>
-          <p>Create or restore an identity from a recovery phrase instead of depending only on phone-number signup.</p>
-        </article>
-        <article class="landingFeature">
-          <h3>Verified sessions</h3>
-          <p>Establish encrypted peer sessions and compare verification codes before trusting a conversation.</p>
-        </article>
-        <article class="landingFeature">
-          <h3>Closed circle MVP</h3>
-          <p>Create a private circle, invite members, approve joins, and move group trust toward member-controlled keys.</p>
-        </article>
-      </div>
-    </section>
+    <article class="landingArticle">
+      <header>
+        <div class="landingAuthor">
+          <span class="landingAvatar">CL</span>
+          <span>Jun 21, 2026</span>
+        </div>
+        <h1 id="landingTitle" class="landingTitle">Technology Preview: CipherLane Private Circle System</h1>
+      </header>
 
-    <section class="landingBand" aria-labelledby="flowTitle">
-      <h2 id="flowTitle" class="landingSectionTitle">How it works</h2>
-      <div class="landingFlow" aria-label="CipherLane setup flow">
-        <span>Generate or restore seed</span>
-        <span>Confirm identity</span>
-        <span>Connect relay</span>
-        <span>Start secure chat</span>
-        <span>Create private circle</span>
+      <p class="landingLead">Groups are inherently social, and a private messenger needs to protect more than message text. A group name, member list, invite history, recovery state, and trust status can reveal sensitive relationships even when every chat bubble is encrypted.</p>
+      <p class="landingText">CipherLane takes a different direction. The relay should deliver messages, but it should not become the authority that understands the circle. Members keep control over identity recovery, device approval, private group state, and epoch-based key rotation.</p>
+
+      <div class="landingActions" aria-label="Landing page actions">
+        <button type="button" data-scroll-app>Open Messenger</button>
+        <a href="#circleTitle">Read the preview</a>
       </div>
-    </section>
+
+      <h2 id="privacyTitle" class="landingSectionTitle">Retrospective: groups without groupthink</h2>
+      <p class="landingText">You cannot send a message to everyone in a group unless you know who is in it. Conventional group chat usually asks a server to store the group roster, distribute updates, and decide who gets the latest state. That can be convenient, but it also gives the server a detailed view of the social graph.</p>
+      <p class="landingText">CipherLane treats that state as sensitive. The service can pass encrypted packets, but current members should decide who receives the material required to read current messages and private circle state.</p>
+
+      <div class="landingDiagram" aria-label="Encrypted circle state example">
+        <table>
+          <thead>
+            <tr>
+              <th>id</th>
+              <th>group_name</th>
+              <th>members</th>
+              <th>circle_epoch_key</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>101</td>
+              <td>Team Alpha</td>
+              <td>Alice, Bob</td>
+              <td>held by approved devices</td>
+            </tr>
+            <tr>
+              <td>102</td>
+              <td>Clinic Board</td>
+              <td>encrypted state</td>
+              <td>rotated by epoch</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="landingText">The obvious downside is that members need a clear approval workflow. The upside is that the server does not need to know the full private shape of the circle to deliver messages.</p>
+
+      <h2 id="trustTitle" class="landingSectionTitle">Return of member-controlled trust</h2>
+      <p class="landingText">Private circles separate identity recovery from circle trust. Restoring a seed can recover the same identity, but a new device should still ask current members for access to circle keys. That prevents recovery from silently becoming group membership.</p>
+      <ul class="landingList">
+        <li>Circle metadata is encrypted with circle-controlled keys.</li>
+        <li>New devices request approval before receiving current epoch keys.</li>
+        <li>Member changes can advance the circle epoch and rotate key material.</li>
+      </ul>
+
+      <p class="landingPullout">The relay can remain useful without becoming the source of authority. It should move packets, not decide who belongs in a private circle.</p>
+
+      <h2 id="circleTitle" class="landingSectionTitle">What this preview includes</h2>
+      <p class="landingText">The current CipherLane MVP includes seed identity, encrypted one-to-one sessions, friend links, install support, and an early closed-circle flow for creating a circle, inviting a member, and approving a join request.</p>
+      <p class="landingText">Before this becomes production security, the design needs deeper cryptographic review, state synchronization tests, revocation behavior, and threat modeling for malicious or compromised members.</p>
+      <p class="landingNote">CipherLane Messenger is an independent technology preview and is not affiliated with Signal, WhatsApp, Meta, or any other messaging provider.</p>
+    </article>
   </main>
 
   <section id="appShell" class="shell">
@@ -3586,8 +3660,17 @@
     dom.onboardingBackToCompare.addEventListener("click", () => showOnboardingStep(2));
     dom.onboardingContinue.addEventListener("click", () => continueFromOnboarding());
     dom.onboardingClose.addEventListener("click", () => closeOnboarding());
-    dom.enterApp.addEventListener("click", () => {
+    function enterMessengerFromLanding() {
       dom.appShell.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (window.__cipherLaneShouldOpenOnboarding) {
+        openOnboarding();
+        window.__cipherLaneShouldOpenOnboarding = false;
+      }
+    }
+
+    dom.enterApp.addEventListener("click", enterMessengerFromLanding);
+    document.querySelectorAll("[data-scroll-app]").forEach((button) => {
+      button.addEventListener("click", enterMessengerFromLanding);
     });
 
     addMessage("Welcome. Connect to relay to begin encrypted chat.", "system");
@@ -3595,9 +3678,7 @@
     const shareParamsState = applyShareParams();
     const isOnboardingSuppressed = localStorage.getItem(ONBOARDING_SUPPRESS_KEY) === "1";
     const shouldOpenOnboarding = shareParamsState.forceOnboarding || !isOnboardingSuppressed;
-    if (shouldOpenOnboarding) {
-      openOnboarding();
-    }
+    window.__cipherLaneShouldOpenOnboarding = shouldOpenOnboarding;
     if (!localStorage.getItem(SEED_STORAGE_KEY)) {
       generateSeedIdentity().catch(() => {
         addMessage("Could not auto-generate local identity seed.", "system");

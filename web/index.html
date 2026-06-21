@@ -1255,6 +1255,162 @@
       animation: configPulse 700ms ease;
     }
 
+    .landingPage {
+      width: min(1360px, 100%);
+      margin: 0 auto 18px;
+      color: var(--ink);
+    }
+
+    .landingHero {
+      min-height: min(82vh, 760px);
+      display: grid;
+      align-content: center;
+      gap: 28px;
+      padding: clamp(28px, 6vw, 72px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+      background:
+        linear-gradient(rgba(8, 15, 19, 0.62), rgba(8, 15, 19, 0.82)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='760' viewBox='0 0 1280 760'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%2300a884'/%3E%3Cstop offset='.48' stop-color='%23111b21'/%3E%3Cstop offset='1' stop-color='%2325d366'/%3E%3C/linearGradient%3E%3Cfilter id='s'%3E%3CfeDropShadow dx='0' dy='24' stdDeviation='24' flood-color='%23000000' flood-opacity='.42'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='1280' height='760' fill='%2309141a'/%3E%3Cpath d='M0 536C186 454 271 614 432 528c170-91 257-303 459-244 135 40 226 182 389 98v378H0z' fill='url(%23g)' opacity='.36'/%3E%3Cg filter='url(%23s)'%3E%3Crect x='706' y='112' width='426' height='536' rx='26' fill='%23111b21' stroke='%23334a54'/%3E%3Crect x='734' y='148' width='370' height='54' rx='15' fill='%23202c33'/%3E%3Ccircle cx='766' cy='175' r='17' fill='%2325d366'/%3E%3Crect x='795' y='164' width='158' height='10' rx='5' fill='%23d9f7ee' opacity='.9'/%3E%3Crect x='795' y='184' width='104' height='8' rx='4' fill='%239eb1ba'/%3E%3Crect x='760' y='246' width='240' height='58' rx='18' fill='%23202c33'/%3E%3Crect x='832' y='334' width='244' height='58' rx='18' fill='%23005c4b'/%3E%3Crect x='760' y='422' width='282' height='58' rx='18' fill='%23202c33'/%3E%3Crect x='734' y='566' width='370' height='48' rx='16' fill='%230d171d' stroke='%23334a54'/%3E%3C/g%3E%3Cg opacity='.88'%3E%3Ccircle cx='214' cy='196' r='54' fill='%2300a884'/%3E%3Ccircle cx='382' cy='282' r='42' fill='%2325d366'/%3E%3Ccircle cx='254' cy='430' r='46' fill='%239fd9c8'/%3E%3Cpath d='M214 196l168 86-128 148' fill='none' stroke='%23d9f7ee' stroke-width='12' stroke-linecap='round' opacity='.76'/%3E%3Cpath d='M214 196l40 234' fill='none' stroke='%23d9f7ee' stroke-width='12' stroke-linecap='round' opacity='.5'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: center;
+      box-shadow: var(--shell-shadow);
+    }
+
+    .landingKicker {
+      margin: 0;
+      width: fit-content;
+      border: 1px solid rgba(37, 211, 102, 0.42);
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: #baf5dd;
+      background: rgba(8, 20, 24, 0.72);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .landingTitle {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(2.4rem, 6vw, 5.6rem);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .landingLead {
+      margin: 0;
+      max-width: 700px;
+      color: #d8e7ec;
+      font-size: clamp(1rem, 1.8vw, 1.28rem);
+      line-height: 1.6;
+    }
+
+    .landingActions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      max-width: 560px;
+    }
+
+    .landingActions button,
+    .landingActions a {
+      width: auto;
+      min-width: 172px;
+      border-radius: 12px;
+      padding: 12px 18px;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .landingActions a {
+      color: #cbf4e8;
+      background: rgba(28, 42, 50, 0.92);
+      border: 1px solid rgba(37, 211, 102, 0.32);
+    }
+
+    .landingBand {
+      padding: 42px 8px 6px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .landingSectionTitle {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      letter-spacing: 0;
+    }
+
+    .landingText {
+      margin: 0;
+      max-width: 860px;
+      color: #b9cbd2;
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .landingGrid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .landingFeature {
+      min-height: 158px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #111b21;
+    }
+
+    .landingFeature h3 {
+      margin: 0 0 10px;
+      font-size: 1.03rem;
+      color: #e9edef;
+    }
+
+    .landingFeature p {
+      margin: 0;
+      color: #9eb1ba;
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .landingFlow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      counter-reset: flow;
+    }
+
+    .landingFlow span {
+      border: 1px solid rgba(37, 211, 102, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      color: #d7fbee;
+      background: #0f1a20;
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .landingFlow span::before {
+      counter-increment: flow;
+      content: counter(flow);
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+      border-radius: 50%;
+      background: #25d366;
+      color: #07150f;
+      font-weight: 900;
+    }
+
     @keyframes configPulse {
       from {
         box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.35);
@@ -1275,6 +1431,34 @@
         padding: 0;
       }
 
+      .landingPage {
+        margin-bottom: 0;
+      }
+
+      .landingHero {
+        min-height: 92vh;
+        border-radius: 0;
+        padding: 28px 18px;
+      }
+
+      .landingActions {
+        display: grid;
+      }
+
+      .landingActions button,
+      .landingActions a {
+        width: 100%;
+      }
+
+      .landingBand {
+        padding: 32px 16px;
+      }
+
+      .landingGrid,
+      .landingFlow {
+        grid-template-columns: 1fr;
+      }
+
       .shell {
         width: 100%;
         height: 100vh;
@@ -1293,7 +1477,49 @@
   </style>
 </head>
 <body>
-  <main class="shell">
+  <main id="landingPage" class="landingPage">
+    <section class="landingHero" aria-labelledby="landingTitle">
+      <p class="landingKicker">Private messaging, seed identity, closed circles</p>
+      <h1 id="landingTitle" class="landingTitle">CipherLane Messenger</h1>
+      <p class="landingLead">A browser-based encrypted messenger built around local identity seeds, peer verification, and private circle controls for small trusted groups.</p>
+      <div class="landingActions">
+        <button id="enterApp" type="button">Open Messenger</button>
+        <a href="#privacyTitle">Explore Features</a>
+      </div>
+    </section>
+
+    <section class="landingBand" aria-labelledby="privacyTitle">
+      <h2 id="privacyTitle" class="landingSectionTitle">Privacy starts before the first message</h2>
+      <p class="landingText">CipherLane keeps identity, recovery, and chat setup close to the user. The relay passes encrypted traffic, while users control seed recovery, peer verification, and circle access.</p>
+      <div class="landingGrid">
+        <article class="landingFeature">
+          <h3>Seed-based identity</h3>
+          <p>Create or restore an identity from a recovery phrase instead of depending only on phone-number signup.</p>
+        </article>
+        <article class="landingFeature">
+          <h3>Verified sessions</h3>
+          <p>Establish encrypted peer sessions and compare verification codes before trusting a conversation.</p>
+        </article>
+        <article class="landingFeature">
+          <h3>Closed circle MVP</h3>
+          <p>Create a private circle, invite members, approve joins, and move group trust toward member-controlled keys.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="landingBand" aria-labelledby="flowTitle">
+      <h2 id="flowTitle" class="landingSectionTitle">How it works</h2>
+      <div class="landingFlow" aria-label="CipherLane setup flow">
+        <span>Generate or restore seed</span>
+        <span>Confirm identity</span>
+        <span>Connect relay</span>
+        <span>Start secure chat</span>
+        <span>Create private circle</span>
+      </div>
+    </section>
+  </main>
+
+  <section id="appShell" class="shell">
     <aside class="left">
       <section class="profileBar">
         <div class="brand">
@@ -1487,7 +1713,7 @@
         <button id="send" class="sendBtn">Mic</button>
       </footer>
     </section>
-  </main>
+  </section>
 
   <section id="onboardingOverlay" class="onboardingOverlay hidden" aria-hidden="true" role="dialog" aria-label="CipherLane onboarding">
     <article class="onboardingCard">
@@ -1751,7 +1977,9 @@
       onboardingDontShow: document.getElementById("onboardingDontShow"),
       onboardingCfgMe: document.getElementById("onboardingCfgMe"),
       onboardingCfgServer: document.getElementById("onboardingCfgServer"),
-      onboardingCfgPeer: document.getElementById("onboardingCfgPeer")
+      onboardingCfgPeer: document.getElementById("onboardingCfgPeer"),
+      enterApp: document.getElementById("enterApp"),
+      appShell: document.getElementById("appShell")
     };
 
     let socket = null;
@@ -3358,6 +3586,9 @@
     dom.onboardingBackToCompare.addEventListener("click", () => showOnboardingStep(2));
     dom.onboardingContinue.addEventListener("click", () => continueFromOnboarding());
     dom.onboardingClose.addEventListener("click", () => closeOnboarding());
+    dom.enterApp.addEventListener("click", () => {
+      dom.appShell.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
 
     addMessage("Welcome. Connect to relay to begin encrypted chat.", "system");
     updateSendButton();

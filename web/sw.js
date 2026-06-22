@@ -1,4 +1,4 @@
-const CACHE_NAME = "cipherlane-v8";
+const CACHE_NAME = "cipherlane-v9";
 const APP_SHELL = [
   "/",
   "/index.html",

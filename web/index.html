@@ -411,7 +411,8 @@
     }
 
     .magic-form button,
-    .magic-link {
+    .magic-link,
+    .google-signin {
       min-height: 48px;
       border: 0;
       border-radius: 8px;
@@ -424,6 +425,33 @@
       font: 800 15px/1 var(--font-ui);
       text-decoration: none;
       cursor: pointer;
+    }
+
+    .google-signin {
+      width: 100%;
+      margin-bottom: 18px;
+      gap: 10px;
+      color: #f7f7f2;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .auth-divider {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: "";
+      height: 1px;
+      background: rgba(119, 231, 247, 0.18);
     }
 
     .magic-result {
@@ -766,6 +794,8 @@
     <div class="auth-card">
       <h2>Sign in with magic link</h2>
       <p>Enter your email address and CipherLane will send a Firebase sign-in link to your inbox.</p>
+      <button class="google-signin" id="google-signin" type="button">Sign in with Google</button>
+      <div class="auth-divider">or</div>
       <form class="magic-form" id="magic-form">
         <label for="magic-email">Email address</label>
         <input id="magic-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
@@ -816,9 +846,11 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import {
       getAuth,
+      GoogleAuthProvider,
       isSignInWithEmailLink,
       onAuthStateChanged,
       sendSignInLinkToEmail,
+      signInWithPopup,
       signInWithEmailLink,
       signOut,
     } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
@@ -827,6 +859,7 @@
     const signInButton = document.getElementById("signin");
     const authPanel = document.getElementById("magic-signin");
     const form = document.getElementById("magic-form");
+    const googleSignInButton = document.getElementById("google-signin");
     const emailInput = document.getElementById("magic-email");
     const result = document.getElementById("magic-result");
     const magicLink = document.getElementById("magic-link");
@@ -847,6 +880,7 @@
     const hasFirebaseConfig = !Object.values(firebaseConfig).some((value) => value.startsWith("PASTE_FIREBASE_"));
     const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
     const auth = app ? getAuth(app) : null;
+    const googleProvider = auth ? new GoogleAuthProvider() : null;
 
     function showAuthPanel() {
       authPanel.hidden = false;
@@ -1014,6 +1048,19 @@
     }
 
     signInButton.addEventListener("click", showAuthPanel);
+    googleSignInButton.addEventListener("click", async () => {
+      if (!auth || !googleProvider) {
+        status.textContent = "Firebase config is missing. Update web/firebase-config.js before using Google sign-in.";
+        return;
+      }
+
+      try {
+        const credential = await signInWithPopup(auth, googleProvider);
+        completeMagicSignIn(credential.user.email || credential.user.displayName || "Google user");
+      } catch (error) {
+        status.textContent = error.message || "Could not sign in with Google.";
+      }
+    });
     connectRealtimeButton.addEventListener("click", connectRealtime);
     messageForm.addEventListener("submit", sendRealtimeMessage);
     messageInput.addEventListener("input", sendTypingSignal);

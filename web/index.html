@@ -411,8 +411,7 @@
     }
 
     .magic-form button,
-    .magic-link,
-    .copy-link {
+    .magic-link {
       min-height: 48px;
       border: 0;
       border-radius: 8px;
@@ -766,17 +765,16 @@
   <section id="magic-signin" class="auth-panel" aria-label="Magic link sign in" hidden>
     <div class="auth-card">
       <h2>Sign in with magic link</h2>
-      <p>Enter your email address and CipherLane will create a one-time sign-in link on this page. Email delivery is not connected yet.</p>
+      <p>Enter your email address and CipherLane will send a Firebase sign-in link to your inbox.</p>
       <form class="magic-form" id="magic-form">
         <label for="magic-email">Email address</label>
         <input id="magic-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
-        <button type="submit">Generate magic link</button>
+        <button type="submit">Send magic link</button>
       </form>
       <div class="magic-result" id="magic-result" hidden>
-        <p>Your magic link is ready below. It was not sent to your inbox.</p>
+        <p>Check your inbox and open the Firebase sign-in link on this device.</p>
         <div class="magic-actions">
-          <a class="magic-link" id="magic-link" href="#">Open magic link</a>
-          <button class="copy-link" id="copy-magic-link" type="button">Copy link</button>
+          <a class="magic-link" id="magic-link" href="#signin">Back to sign in</a>
         </div>
       </div>
       <div class="auth-status" id="auth-status" role="status" aria-live="polite"></div>
@@ -814,14 +812,24 @@
     <p class="disclaimer">Disclaimer: Security and privacy features may change as the product evolves, and users should review current settings before relying on the service for sensitive communication.</p>
     <div>&copy; 2026 mpaiapps</div>
   </footer>
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getAuth,
+      isSignInWithEmailLink,
+      onAuthStateChanged,
+      sendSignInLinkToEmail,
+      signInWithEmailLink,
+      signOut,
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
     const signInButton = document.getElementById("signin");
     const authPanel = document.getElementById("magic-signin");
     const form = document.getElementById("magic-form");
     const emailInput = document.getElementById("magic-email");
     const result = document.getElementById("magic-result");
     const magicLink = document.getElementById("magic-link");
-    const copyMagicLink = document.getElementById("copy-magic-link");
     const status = document.getElementById("auth-status");
     const clientIdInput = document.getElementById("client-id");
     const peerIdInput = document.getElementById("peer-id");
@@ -836,6 +844,9 @@
     let typingTimer;
     let realtimeMode = "offline";
     let channel = "BroadcastChannel" in window ? new BroadcastChannel("cipherlane_realtime") : null;
+    const hasFirebaseConfig = !Object.values(firebaseConfig).some((value) => value.startsWith("PASTE_FIREBASE_"));
+    const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
+    const auth = app ? getAuth(app) : null;
 
     function showAuthPanel() {
       authPanel.hidden = false;
@@ -1012,49 +1023,76 @@
       });
     }
 
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
       const email = emailInput.value.trim();
       if (!email) {
         return;
       }
 
-      const token = crypto.randomUUID();
-      localStorage.setItem(`cipherlane_magic_${token}`, email);
-      magicLink.href = `${location.origin}${location.pathname}#magic=${token}`;
-      result.hidden = false;
-      status.textContent = "Magic link generated on this page. Email delivery is not configured.";
-    });
+      if (!auth) {
+        status.textContent = "Firebase config is missing. Update web/firebase-config.js before sending email links.";
+        return;
+      }
 
-    copyMagicLink.addEventListener("click", async () => {
+      const actionCodeSettings = {
+        url: `${location.origin}${location.pathname}`,
+        handleCodeInApp: true,
+      };
+
       try {
-        await navigator.clipboard.writeText(magicLink.href);
-        status.textContent = "Magic link copied.";
-      } catch {
-        status.textContent = magicLink.href;
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+        localStorage.setItem("cipherlane_email_for_signin", email);
+        result.hidden = false;
+        status.textContent = `Magic link sent to ${email}.`;
+      } catch (error) {
+        status.textContent = error.message || "Could not send magic link.";
       }
     });
 
-    const hash = new URLSearchParams(location.hash.slice(1));
-    const magicToken = hash.get("magic");
-    if (magicToken) {
-      const email = localStorage.getItem(`cipherlane_magic_${magicToken}`);
-      if (email) {
-        localStorage.removeItem(`cipherlane_magic_${magicToken}`);
-        completeMagicSignIn(email);
-        history.replaceState(null, "", location.pathname);
-      } else {
-        showAuthPanel();
-        status.textContent = "This magic link is expired or was opened in a different browser.";
+    if (!hasFirebaseConfig) {
+      status.textContent = "Firebase config is missing. Add your project values in web/firebase-config.js.";
+    }
+
+    if (auth && isSignInWithEmailLink(auth, window.location.href)) {
+      let email = localStorage.getItem("cipherlane_email_for_signin");
+      if (!email) {
+        email = window.prompt("Enter the email address used for sign in");
       }
+      if (email) {
+        signInWithEmailLink(auth, email, window.location.href)
+          .then((credential) => {
+            localStorage.removeItem("cipherlane_email_for_signin");
+            completeMagicSignIn(credential.user.email || email);
+            history.replaceState(null, "", location.pathname);
+          })
+          .catch((error) => {
+            showAuthPanel();
+            status.textContent = error.message || "This magic link is invalid or expired.";
+          });
+      }
+    } else if (auth) {
+      onAuthStateChanged(auth, (user) => {
+        if (user?.email) {
+          completeMagicSignIn(user.email);
+        }
+      });
     } else {
       const user = localStorage.getItem("cipherlane_user");
       if (user) {
-        status.textContent = `Signed in as ${user}.`;
-        signInButton.textContent = "Signed in";
-        clientIdInput.value = user.split("@")[0];
+        completeMagicSignIn(user);
       }
     }
+
+    window.cipherlaneSignOut = async () => {
+      if (auth) {
+        await signOut(auth);
+      }
+      localStorage.removeItem("cipherlane_user");
+      signInButton.textContent = "Sign in";
+      status.textContent = "Signed out.";
+      result.hidden = true;
+    };
   </script>
 </body>
 </html>

@@ -34,9 +34,7 @@
 
     body {
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
       background:
         radial-gradient(circle at 52% 48%, rgba(57, 148, 255, 0.14), transparent 33%),
         linear-gradient(180deg, #05080b 0, #081015 100%);
@@ -70,7 +68,25 @@
       font-weight: 700;
     }
 
+    .sidebar button {
+      min-height: 44px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+      font: 700 16px/1 var(--font-ui);
+      text-align: left;
+      cursor: pointer;
+    }
+
     .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar button:hover {
       background: rgba(255, 255, 255, 0.1);
     }
 
@@ -118,6 +134,33 @@
       height: 36px;
       background: linear-gradient(90deg, transparent, rgba(100, 221, 242, 0.18), transparent);
       pointer-events: none;
+    }
+
+    .top-heading {
+      position: absolute;
+      top: 28px;
+      left: 50%;
+      z-index: 3;
+      transform: translateX(-50%);
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      color: #f5feff;
+      font-family: var(--font-display);
+      font-size: clamp(24px, 3vw, 38px);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+      white-space: nowrap;
+    }
+
+    .top-heading span {
+      color: var(--muted);
+      font-family: var(--font-ui);
+      font-size: clamp(13px, 1.3vw, 16px);
+      line-height: 1.35;
+      font-weight: 700;
     }
 
     .chart {
@@ -179,21 +222,6 @@
       transform: translateY(18px);
     }
 
-    .avatar {
-      width: 132px;
-      height: 132px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      margin-bottom: 38px;
-      color: #fff;
-      background:
-        linear-gradient(135deg, rgba(30, 226, 196, 0.95), rgba(89, 133, 255, 0.95)),
-        radial-gradient(circle at 32% 24%, rgba(255, 255, 255, 0.55), transparent 28%);
-      box-shadow: 0 24px 80px rgba(94, 228, 246, 0.32);
-      font: 700 34px/1 var(--font-display);
-    }
-
     h1 {
       margin: 0 0 26px;
       color: var(--text);
@@ -207,12 +235,19 @@
     }
 
     .byline,
+    .description,
     .tagline {
       margin: 0;
       color: var(--muted);
       font-size: clamp(16px, 1.7vw, 20px);
       line-height: 1.45;
       font-weight: 600;
+    }
+
+    .description {
+      max-width: 680px;
+      margin-bottom: 26px;
+      color: #d8eef4;
     }
 
     .byline {
@@ -245,10 +280,367 @@
       line-height: 1;
     }
 
+    .highlights {
+      width: min(1180px, calc(100vw - 270px));
+      margin-left: 270px;
+      padding: 76px clamp(24px, 5vw, 72px) 88px;
+      border-bottom: 1px solid rgba(117, 233, 248, 0.16);
+      background: #071017;
+    }
+
+    .highlights-inner {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .highlights h2 {
+      margin: 0 0 18px;
+      color: #f5feff;
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .highlights p {
+      max-width: 720px;
+      margin: 0 0 34px;
+      color: var(--muted);
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .highlights ul {
+      display: grid;
+      gap: 16px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .highlights li {
+      position: relative;
+      padding: 18px 20px 18px 48px;
+      border: 1px solid rgba(119, 231, 247, 0.18);
+      border-radius: 8px;
+      color: #e8f9fc;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: clamp(15px, 1.5vw, 18px);
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .highlights li::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      top: 27px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(123, 233, 242, 0.65);
+    }
+
+    .auth-panel {
+      width: min(1180px, calc(100vw - 270px));
+      margin-left: 270px;
+      padding: 72px clamp(24px, 5vw, 72px);
+      background: #050b11;
+      border-top: 1px solid rgba(117, 233, 248, 0.16);
+    }
+
+    .auth-panel[hidden] {
+      display: none;
+    }
+
+    .auth-card {
+      max-width: 620px;
+      margin: 0 auto;
+      border: 1px solid rgba(119, 231, 247, 0.24);
+      border-radius: 8px;
+      padding: clamp(24px, 4vw, 40px);
+      background: rgba(255, 255, 255, 0.045);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    }
+
+    .auth-card h2 {
+      margin: 0 0 12px;
+      color: #f5feff;
+      font-family: var(--font-display);
+      font-size: clamp(30px, 3.6vw, 44px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .auth-card p {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .magic-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .magic-form label {
+      color: #e8f9fc;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .magic-form input {
+      width: 100%;
+      min-height: 50px;
+      border: 1px solid rgba(119, 231, 247, 0.28);
+      border-radius: 8px;
+      padding: 0 16px;
+      color: #ffffff;
+      background: rgba(5, 12, 18, 0.88);
+      font: 700 16px/1 var(--font-ui);
+      outline: none;
+    }
+
+    .magic-form input:focus {
+      border-color: rgba(123, 233, 242, 0.78);
+      box-shadow: 0 0 0 3px rgba(123, 233, 242, 0.14);
+    }
+
+    .magic-form button,
+    .magic-link,
+    .copy-link {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      color: #031014;
+      background: var(--cyan);
+      font: 800 15px/1 var(--font-ui);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .magic-result {
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid rgba(119, 231, 247, 0.2);
+      border-radius: 8px;
+      background: rgba(5, 16, 22, 0.72);
+    }
+
+    .magic-result[hidden] {
+      display: none;
+    }
+
+    .magic-result p {
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    .magic-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .realtime {
+      width: min(1180px, calc(100vw - 270px));
+      margin-left: 270px;
+      padding: 76px clamp(24px, 5vw, 72px) 88px;
+      background: #071017;
+      border-top: 1px solid rgba(117, 233, 248, 0.16);
+    }
+
+    .realtime[hidden] {
+      display: none;
+    }
+
+    .realtime-inner {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .realtime h2 {
+      margin: 0 0 14px;
+      color: #f5feff;
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .realtime-copy {
+      max-width: 720px;
+      margin: 0 0 30px;
+      color: var(--muted);
+      font-size: clamp(16px, 1.8vw, 20px);
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .realtime-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) 1fr;
+      gap: 18px;
+    }
+
+    .realtime-controls,
+    .chat-box {
+      border: 1px solid rgba(119, 231, 247, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .realtime-controls {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .realtime-controls label {
+      display: grid;
+      gap: 8px;
+      color: #e8f9fc;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .realtime-controls input,
+    .message-form input {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid rgba(119, 231, 247, 0.28);
+      border-radius: 8px;
+      padding: 0 14px;
+      color: #ffffff;
+      background: rgba(5, 12, 18, 0.88);
+      font: 700 15px/1 var(--font-ui);
+      outline: none;
+    }
+
+    .realtime-controls input:focus,
+    .message-form input:focus {
+      border-color: rgba(123, 233, 242, 0.78);
+      box-shadow: 0 0 0 3px rgba(123, 233, 242, 0.14);
+    }
+
+    .realtime-controls button,
+    .message-form button {
+      min-height: 46px;
+      border: 0;
+      border-radius: 8px;
+      color: #031014;
+      background: var(--cyan);
+      font: 800 14px/1 var(--font-ui);
+      cursor: pointer;
+    }
+
+    .connection-status,
+    .typing-status {
+      min-height: 21px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .chat-box {
+      min-height: 430px;
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      overflow: hidden;
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 320px;
+      max-height: 430px;
+      overflow: auto;
+      padding: 18px;
+    }
+
+    .message {
+      max-width: 78%;
+      border: 1px solid rgba(119, 231, 247, 0.18);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: #effcff;
+      background: rgba(255, 255, 255, 0.055);
+      font-size: 15px;
+      line-height: 1.45;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .message.sent {
+      align-self: flex-end;
+      color: #031014;
+      background: var(--cyan);
+    }
+
+    .message.system {
+      align-self: center;
+      max-width: 100%;
+      color: var(--muted);
+      background: transparent;
+      border-color: rgba(119, 231, 247, 0.12);
+      font-size: 13px;
+    }
+
+    .typing-status {
+      padding: 0 18px 10px;
+    }
+
+    .message-form {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 10px;
+      padding: 14px;
+      border-top: 1px solid rgba(119, 231, 247, 0.14);
+    }
+
+    .auth-status {
+      margin-top: 18px;
+      color: #d9faff;
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 800;
+    }
+
+    .footer {
+      width: min(1180px, calc(100vw - 270px));
+      margin-left: 270px;
+      padding: 24px;
+      border-top: 1px solid rgba(117, 233, 248, 0.12);
+      color: var(--muted);
+      background: #05090d;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .disclaimer {
+      max-width: 820px;
+      margin: 0 auto 14px;
+      color: rgba(199, 213, 220, 0.78);
+      font-size: 13px;
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
     @media (max-width: 760px) {
       body {
         overflow: auto;
-        display: block;
       }
 
       .sidebar {
@@ -267,13 +659,6 @@
         width: calc(100% - 32px);
       }
 
-      .avatar {
-        width: 84px;
-        height: 84px;
-        margin-bottom: 28px;
-        font-size: 24px;
-      }
-
       h1 {
         white-space: normal;
       }
@@ -287,16 +672,53 @@
         min-width: 0;
         font-size: 14px;
       }
+
+      .highlights {
+        width: 100%;
+        margin-left: 0;
+        padding: 56px 20px 64px;
+      }
+
+      .highlights li {
+        padding-right: 16px;
+      }
+
+      .auth-panel {
+        width: 100%;
+        margin-left: 0;
+        padding: 48px 20px;
+      }
+
+      .realtime {
+        width: 100%;
+        margin-left: 0;
+        padding: 56px 20px 64px;
+      }
+
+      .realtime-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .message-form {
+        grid-template-columns: 1fr;
+      }
+
+      .footer {
+        width: 100%;
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
   <nav class="sidebar" aria-label="CipherLane navigation">
-    <a id="signin" href="#preview">Sign in</a>
-    <a href="#preview">Tech Preview</a>
+    <button id="signin" type="button">Sign in</button>
+    <a href="#highlights">Highlights</a>
   </nav>
 
   <main class="hero" aria-label="CipherLane technology preview">
+    <div class="top-heading">Cipherlane<span>One of the most safe and secure messenger</span></div>
+
     <div class="chart" aria-hidden="true">
       <span class="candle" style="--x: 0%; --y: 52%; --h: 116px; --c: var(--blue);"></span>
       <span class="candle" style="--x: 5%; --y: 55%; --h: 62px; --c: var(--cyan);"></span>
@@ -315,8 +737,8 @@
     </div>
 
     <section id="preview" class="content">
-      <div class="avatar">CL</div>
       <h1>Privacy Through Time</h1>
+      <p class="description">A living view of how trust is created, shared, and renewed.<br />CipherLane keeps private circles protected across every session.</p>
       <p class="byline"><strong>CipherLane Team</strong> on 21 Jun 2026</p>
       <p class="tagline">Build now - rewind trust - watch it live</p>
       <div class="chips" aria-label="CipherLane privacy pillars">
@@ -326,5 +748,313 @@
       </div>
     </section>
   </main>
+
+  <section id="highlights" class="highlights" aria-label="CipherLane highlights">
+    <div class="highlights-inner">
+      <h2>Highlights</h2>
+      <p>CipherLane is designed around privacy-first communication, with control built into the way people join, verify, and stay connected.</p>
+      <ul>
+        <li>Member-approved circles keep access intentional, unlike open invite flows where links can spread beyond the original group.</li>
+        <li>Verified sessions make every device connection explicit, so users know which sessions are trusted before conversations continue.</li>
+        <li>Seed identity gives users a stable private identity layer without relying only on phone numbers or disposable account handles.</li>
+        <li>Time-aware trust helps conversations evolve safely by renewing permissions instead of assuming old access should last forever.</li>
+        <li>Focused private circles reduce noise and exposure compared with broad messenger groups built for scale over confidentiality.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="magic-signin" class="auth-panel" aria-label="Magic link sign in" hidden>
+    <div class="auth-card">
+      <h2>Sign in with magic link</h2>
+      <p>Enter your email address and CipherLane will create a one-time sign-in link on this page. Email delivery is not connected yet.</p>
+      <form class="magic-form" id="magic-form">
+        <label for="magic-email">Email address</label>
+        <input id="magic-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+        <button type="submit">Generate magic link</button>
+      </form>
+      <div class="magic-result" id="magic-result" hidden>
+        <p>Your magic link is ready below. It was not sent to your inbox.</p>
+        <div class="magic-actions">
+          <a class="magic-link" id="magic-link" href="#">Open magic link</a>
+          <button class="copy-link" id="copy-magic-link" type="button">Copy link</button>
+        </div>
+      </div>
+      <div class="auth-status" id="auth-status" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section id="realtime" class="realtime" aria-label="Realtime messenger" hidden>
+    <div class="realtime-inner">
+      <h2>Realtime Messenger</h2>
+      <p class="realtime-copy">Connect with a private ID, choose a recipient ID, and exchange live messages through the CipherLane websocket relay.</p>
+      <div class="realtime-grid">
+        <div class="realtime-controls">
+          <label for="client-id">Your ID
+            <input id="client-id" type="text" autocomplete="username" placeholder="alice" />
+          </label>
+          <label for="peer-id">Recipient ID
+            <input id="peer-id" type="text" autocomplete="off" placeholder="bob" />
+          </label>
+          <button id="connect-realtime" type="button">Connect realtime</button>
+          <div class="connection-status" id="connection-status">Disconnected</div>
+        </div>
+        <div class="chat-box">
+          <div class="messages" id="messages" aria-live="polite"></div>
+          <div class="typing-status" id="typing-status"></div>
+          <form class="message-form" id="message-form">
+            <input id="message-input" type="text" autocomplete="off" placeholder="Type a message" />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="disclaimer">Disclaimer: Security and privacy features may change as the product evolves, and users should review current settings before relying on the service for sensitive communication.</p>
+    <div>&copy; 2026 mpaiapps</div>
+  </footer>
+  <script>
+    const signInButton = document.getElementById("signin");
+    const authPanel = document.getElementById("magic-signin");
+    const form = document.getElementById("magic-form");
+    const emailInput = document.getElementById("magic-email");
+    const result = document.getElementById("magic-result");
+    const magicLink = document.getElementById("magic-link");
+    const copyMagicLink = document.getElementById("copy-magic-link");
+    const status = document.getElementById("auth-status");
+    const clientIdInput = document.getElementById("client-id");
+    const peerIdInput = document.getElementById("peer-id");
+    const connectRealtimeButton = document.getElementById("connect-realtime");
+    const connectionStatus = document.getElementById("connection-status");
+    const messages = document.getElementById("messages");
+    const typingStatus = document.getElementById("typing-status");
+    const messageForm = document.getElementById("message-form");
+    const messageInput = document.getElementById("message-input");
+    let socket;
+    let realtimeClientId = "";
+    let typingTimer;
+    let realtimeMode = "offline";
+    let channel = "BroadcastChannel" in window ? new BroadcastChannel("cipherlane_realtime") : null;
+
+    function showAuthPanel() {
+      authPanel.hidden = false;
+      authPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      emailInput.focus();
+    }
+
+    function completeMagicSignIn(email) {
+      localStorage.setItem("cipherlane_user", email);
+      status.textContent = `Signed in as ${email}.`;
+      signInButton.textContent = "Signed in";
+      clientIdInput.value = clientIdInput.value || email.split("@")[0];
+      authPanel.hidden = false;
+      result.hidden = true;
+    }
+
+    function addMessage(text, variant = "system") {
+      const item = document.createElement("div");
+      item.className = `message ${variant}`;
+      item.textContent = text;
+      messages.appendChild(item);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function setConnectionStatus(text) {
+      connectionStatus.textContent = text;
+    }
+
+    function handleRealtimeData(data) {
+      if (data.to && data.to !== realtimeClientId) {
+        return;
+      }
+
+      if (data.type === "connected") {
+        return;
+      }
+
+      if (data.type === "chat") {
+        addMessage(`${data.from}: ${data.content}`, "received");
+        typingStatus.textContent = "";
+        return;
+      }
+
+      if (data.type === "typing") {
+        typingStatus.textContent = `${data.from} is typing...`;
+        window.clearTimeout(typingTimer);
+        typingTimer = window.setTimeout(() => {
+          typingStatus.textContent = "";
+        }, 1800);
+        return;
+      }
+
+      if (data.type === "error") {
+        addMessage(data.message || "Server error.", "system");
+      }
+    }
+
+    function useLocalRealtimeFallback() {
+      if (realtimeMode === "local") {
+        return;
+      }
+      realtimeMode = "local";
+      setConnectionStatus(`Connected locally as ${realtimeClientId}`);
+      addMessage("Websocket server is unavailable, so local realtime mode is active. Open this app in another tab to test live messaging.", "system");
+    }
+
+    function connectRealtime() {
+      const clientId = clientIdInput.value.trim();
+      if (!clientId) {
+        setConnectionStatus("Enter your ID before connecting.");
+        clientIdInput.focus();
+        return;
+      }
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+
+      realtimeClientId = clientId;
+      setConnectionStatus("Connecting...");
+      realtimeMode = "socket";
+      socket = new WebSocket("ws://localhost:8765");
+
+      socket.addEventListener("open", () => {
+        socket.send(JSON.stringify({ client_id: realtimeClientId }));
+        setConnectionStatus(`Connected as ${realtimeClientId}`);
+        addMessage(`Connected as ${realtimeClientId}. Ask another user to connect with a different ID.`, "system");
+      });
+
+      socket.addEventListener("message", (event) => {
+        let data;
+        try {
+          data = JSON.parse(event.data);
+        } catch {
+          addMessage("Received an unreadable message.", "system");
+          return;
+        }
+
+        handleRealtimeData(data);
+      });
+
+      socket.addEventListener("close", () => {
+        if (realtimeMode === "socket") {
+          useLocalRealtimeFallback();
+        }
+      });
+
+      socket.addEventListener("error", () => {
+        useLocalRealtimeFallback();
+      });
+    }
+
+    function sendRealtimeMessage(event) {
+      event.preventDefault();
+      const peerId = peerIdInput.value.trim();
+      const content = messageInput.value.trim();
+      if (!content) {
+        return;
+      }
+
+      if (realtimeMode === "offline") {
+        addMessage("Connect realtime before sending.", "system");
+        return;
+      }
+
+      if (!peerId) {
+        addMessage("Enter a recipient ID before sending.", "system");
+        peerIdInput.focus();
+        return;
+      }
+
+      const payload = {
+        type: "chat",
+        from: realtimeClientId,
+        to: peerId,
+        content,
+        expires_at: Date.now() + 5 * 60 * 1000,
+      };
+      if (realtimeMode === "socket" && socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(payload));
+      } else if (channel) {
+        channel.postMessage(payload);
+      }
+      addMessage(content, "sent");
+      messageInput.value = "";
+    }
+
+    function sendTypingSignal() {
+      const peerId = peerIdInput.value.trim();
+      if (!peerId || realtimeMode === "offline") {
+        return;
+      }
+
+      const payload = {
+        type: "typing",
+        from: realtimeClientId,
+        to: peerId,
+        expires_at: Date.now() + 30 * 1000,
+      };
+      if (realtimeMode === "socket" && socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(payload));
+      } else if (channel) {
+        channel.postMessage(payload);
+      }
+    }
+
+    signInButton.addEventListener("click", showAuthPanel);
+    connectRealtimeButton.addEventListener("click", connectRealtime);
+    messageForm.addEventListener("submit", sendRealtimeMessage);
+    messageInput.addEventListener("input", sendTypingSignal);
+    if (channel) {
+      channel.addEventListener("message", (event) => {
+        handleRealtimeData(event.data);
+      });
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const email = emailInput.value.trim();
+      if (!email) {
+        return;
+      }
+
+      const token = crypto.randomUUID();
+      localStorage.setItem(`cipherlane_magic_${token}`, email);
+      magicLink.href = `${location.origin}${location.pathname}#magic=${token}`;
+      result.hidden = false;
+      status.textContent = "Magic link generated on this page. Email delivery is not configured.";
+    });
+
+    copyMagicLink.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(magicLink.href);
+        status.textContent = "Magic link copied.";
+      } catch {
+        status.textContent = magicLink.href;
+      }
+    });
+
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const magicToken = hash.get("magic");
+    if (magicToken) {
+      const email = localStorage.getItem(`cipherlane_magic_${magicToken}`);
+      if (email) {
+        localStorage.removeItem(`cipherlane_magic_${magicToken}`);
+        completeMagicSignIn(email);
+        history.replaceState(null, "", location.pathname);
+      } else {
+        showAuthPanel();
+        status.textContent = "This magic link is expired or was opened in a different browser.";
+      }
+    } else {
+      const user = localStorage.getItem("cipherlane_user");
+      if (user) {
+        status.textContent = `Signed in as ${user}.`;
+        signInButton.textContent = "Signed in";
+        clientIdInput.value = user.split("@")[0];
+      }
+    }
+  </script>
 </body>
 </html>

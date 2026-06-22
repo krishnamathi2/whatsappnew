@@ -864,6 +864,7 @@
     const result = document.getElementById("magic-result");
     const magicLink = document.getElementById("magic-link");
     const status = document.getElementById("auth-status");
+    const realtimeSection = document.getElementById("realtime");
     const clientIdInput = document.getElementById("client-id");
     const peerIdInput = document.getElementById("peer-id");
     const connectRealtimeButton = document.getElementById("connect-realtime");
@@ -876,6 +877,7 @@
     let realtimeClientId = "";
     let typingTimer;
     let realtimeMode = "offline";
+    let hasShownWelcomeMessage = false;
     let channel = "BroadcastChannel" in window ? new BroadcastChannel("cipherlane_realtime") : null;
     const hasFirebaseConfig = !Object.values(firebaseConfig).some((value) => value.startsWith("PASTE_FIREBASE_"));
     const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
@@ -888,13 +890,25 @@
       emailInput.focus();
     }
 
-    function completeMagicSignIn(email) {
-      localStorage.setItem("cipherlane_user", email);
-      status.textContent = `Signed in as ${email}.`;
+    function startChatbot(identity) {
+      const userIdentity = identity || "CipherLane user";
+      localStorage.setItem("cipherlane_user", userIdentity);
+      status.textContent = `Signed in as ${userIdentity}.`;
       signInButton.textContent = "Signed in";
-      clientIdInput.value = clientIdInput.value || email.split("@")[0];
-      authPanel.hidden = false;
+      clientIdInput.value = clientIdInput.value || userIdentity.split("@")[0];
+      authPanel.hidden = true;
       result.hidden = true;
+      realtimeSection.hidden = false;
+      if (!hasShownWelcomeMessage) {
+        addMessage("welcome to cipherlane - one of the most safe and secure messengers", "system");
+        hasShownWelcomeMessage = true;
+      }
+      realtimeSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      messageInput.focus();
+    }
+
+    function completeMagicSignIn(email) {
+      startChatbot(email);
     }
 
     function addMessage(text, variant = "system") {
@@ -1047,7 +1061,7 @@
       }
     }
 
-    signInButton.addEventListener("click", showAuthPanel);
+    signInButton.addEventListener("click", () => startChatbot("CipherLane user"));
     googleSignInButton.addEventListener("click", async () => {
       if (!auth || !googleProvider) {
         status.textContent = "Firebase config is missing. Update web/firebase-config.js before using Google sign-in.";
@@ -1139,6 +1153,9 @@
       signInButton.textContent = "Sign in";
       status.textContent = "Signed out.";
       result.hidden = true;
+      realtimeSection.hidden = true;
+      messages.replaceChildren();
+      hasShownWelcomeMessage = false;
     };
   </script>
 </body>

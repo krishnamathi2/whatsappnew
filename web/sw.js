@@ -1,10 +1,9 @@
-const CACHE_NAME = "cipherlane-v10";
+const CACHE_NAME = "cipherlane-v20";
 const APP_SHELL = [
   "/",
   "/index.html",
   "/firebase-config.js",
   "/sw.js",
-  "/qrcode.min.js",
   "/manifest.webmanifest",
   "/icons/icon-192.svg",
   "/icons/icon-512.svg",

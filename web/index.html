@@ -276,7 +276,7 @@
     <section class="messages" id="messages" aria-live="polite"></section>
 
     <section class="connection-panel" aria-label="Secure chat connection">
-      <input id="server-url" type="text" value="ws://localhost:8765" aria-label="Server URL" />
+      <input id="server-url" type="text" value="firebase" aria-label="Server URL" />
       <input id="you-id" type="text" placeholder="You" aria-label="Your ID" />
       <input id="friend-id" type="text" placeholder="Friend" aria-label="Friend ID" />
       <button id="connect-button" type="button">Connect</button>
@@ -303,7 +303,19 @@
     </form>
   </main>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      addDoc,
+      collection,
+      getFirestore,
+      onSnapshot,
+      query,
+      serverTimestamp,
+      where
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
     const messages = document.getElementById("messages");
     const composer = document.getElementById("composer");
     const messageInput = document.getElementById("message-input");
@@ -325,9 +337,17 @@
     let sharedKey = null;
     let secureReady = false;
     let demoMode = false;
+    let firebaseMode = false;
+    let unsubscribeInbox = null;
+    let connectedAt = 0;
+    const seenCloudMessages = new Set();
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getFirestore(firebaseApp);
     const seedMessage = "Unlike other messengers, CipherLane does not use your phone number as your messenger identity. This helps keep your ID private. To continue, you need to generate a seed. Your seed is your CipherLane identity, so please click Generate Seed to create it.";
 
-    if (window.location.protocol.startsWith("http") && window.location.hostname) {
+    if (window.location.protocol === "https:") {
+      serverUrlInput.value = "firebase";
+    } else if (window.location.protocol.startsWith("http") && window.location.hostname) {
       serverUrlInput.value = `ws://${window.location.hostname}:8765`;
     }
 
@@ -438,6 +458,10 @@
     }
 
     function sendRelayMessage(payload) {
+      if (firebaseMode) {
+        return sendCloudMessage(payload);
+      }
+
       if (!socket || socket.readyState !== WebSocket.OPEN) {
         addMessage("Connect to the relay before sending secure messages.");
         return false;
@@ -449,6 +473,71 @@
         expires_at: Date.now() + 300000,
       }));
       return true;
+    }
+
+    function sendCloudMessage(payload) {
+      const yourId = getYourId();
+      const friendId = getFriendId();
+      if (!yourId || !friendId) {
+        addMessage("Enter both seed IDs before sending secure messages.");
+        return false;
+      }
+
+      addDoc(collection(db, "cipherlane_messages"), {
+        ...payload,
+        from: yourId,
+        to: friendId,
+        createdAt: Date.now(),
+        expires_at: Date.now() + 300000,
+        serverCreatedAt: serverTimestamp(),
+      }).catch(() => {
+        addMessage("Cloud relay write failed. Check Firebase rules for cipherlane_messages.");
+      });
+      return true;
+    }
+
+    function connectCloudRelay() {
+      const yourId = getYourId();
+      if (!yourId) {
+        addMessage("Enter your seed ID before connecting.");
+        return;
+      }
+
+      if (unsubscribeInbox) {
+        unsubscribeInbox();
+      }
+
+      firebaseMode = true;
+      demoMode = false;
+      connectedAt = Date.now() - 5000;
+      seenCloudMessages.clear();
+
+      const inboxQuery = query(
+        collection(db, "cipherlane_messages"),
+        where("to", "==", yourId)
+      );
+
+      unsubscribeInbox = onSnapshot(inboxQuery, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "removed") {
+            return;
+          }
+
+          const data = change.doc.data();
+          const createdAt = Number(data.createdAt || 0);
+          if (seenCloudMessages.has(change.doc.id) || createdAt < connectedAt || data.expires_at < Date.now()) {
+            return;
+          }
+
+          seenCloudMessages.add(change.doc.id);
+          handleRelayMessage(data);
+        });
+      }, () => {
+        firebaseMode = false;
+        addMessage("Cloud relay connection failed. Check Firebase Firestore access.");
+      });
+
+      addMessage("Connected to cloud relay. Ask your friend to connect with the opposite seed IDs.");
     }
 
     async function handleRelayMessage(data) {
@@ -506,6 +595,17 @@
         return;
       }
 
+      if (serverUrl.toLowerCase() === "firebase" || serverUrl.toLowerCase() === "cloud") {
+        connectCloudRelay();
+        return;
+      }
+
+      firebaseMode = false;
+      if (unsubscribeInbox) {
+        unsubscribeInbox();
+        unsubscribeInbox = null;
+      }
+
       if (socket) {
         socket.close();
       }
@@ -552,6 +652,11 @@
         addMessage("Demo secure channel established with CL-FRIEND01.");
         return;
       }
+      if (!firebaseMode && (!socket || socket.readyState !== WebSocket.OPEN)) {
+        addMessage("Click Connect before starting secure chat.");
+        return;
+      }
+
       await generateKeyPair();
       const sent = sendRelayMessage({
         type: "key_exchange",
@@ -593,7 +698,7 @@
     function showFirstChatStep() {
       addMessage("Would you like to create your first secure chat now?");
       addActionButton("Start Secure Chat", () => {
-        addMessage("Secure chat is ready. Enter both IDs above, connect, then start secure.");
+        addMessage("Secure chat is ready. Use Server URL firebase, enter both seed IDs, connect, then start secure.");
         currentStep = "chat";
         messageInput.disabled = false;
         messageInput.placeholder = "Type a message";
@@ -659,7 +764,7 @@
       if (currentStep === "chat") {
         if (demoMode && secureReady) {
           window.setTimeout(() => addMessage(`CL-FRIEND01 received: ${text}`), 250);
-        } else if (socket && socket.readyState === WebSocket.OPEN && secureReady && getFriendId()) {
+        } else if ((firebaseMode || (socket && socket.readyState === WebSocket.OPEN)) && secureReady && getFriendId()) {
           encryptText(text).then((content) => {
             sendRelayMessage({ type: "chat", content });
           }).catch(() => addMessage("Could not encrypt the message."));
@@ -698,7 +803,7 @@
       generatedSeed = savedSeed;
       currentStep = "chat";
       youIdInput.value = savedSeed;
-      addMessage("Seed found locally. Secure chat is ready. Enter your friend's ID, connect, then start secure.");
+      addMessage("Seed found locally. Secure chat is ready. Ask your friend for their seed ID, enter it in Friend, click Connect, then Start Secure.");
       messageInput.placeholder = "Type a message";
       messageInput.focus();
     } else {

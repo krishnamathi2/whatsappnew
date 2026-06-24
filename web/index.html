@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -7,14 +7,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
-  <title>CipherLane</title>
+  <title>CipherLane Chatbot</title>
   <style>
     :root {
       --font-ui: "Manrope", "Inter", "Segoe UI", system-ui, sans-serif;
       --font-display: "Space Grotesk", "Manrope", "Inter", "Segoe UI", system-ui, sans-serif;
       --cyan: #7be9f2;
       --blue: #3f6fd8;
-      --line: rgba(106, 230, 244, 0.13);
+      --panel: rgba(255, 255, 255, 0.055);
+      --line: rgba(123, 233, 242, 0.18);
       --text: #f7f7f2;
       --muted: #c7d5dc;
     }
@@ -34,366 +35,163 @@
 
     body {
       min-height: 100vh;
-      overflow-x: hidden;
+      display: grid;
       background:
-        radial-gradient(circle at 52% 48%, rgba(57, 148, 255, 0.14), transparent 33%),
+        linear-gradient(rgba(101, 224, 244, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(101, 224, 244, 0.055) 1px, transparent 1px),
+        radial-gradient(circle at 50% 20%, rgba(63, 111, 216, 0.26), transparent 38%),
         linear-gradient(180deg, #05080b 0, #081015 100%);
+      background-size: 96px 96px, 96px 96px, auto, auto;
     }
 
-    .sidebar {
-      position: fixed;
-      inset: 0 auto 0 0;
-      z-index: 5;
-      width: 270px;
-      padding: 32px 20px;
+    .chat-app {
+      width: min(960px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      background: rgba(5, 12, 18, 0.78);
+    }
+
+    .chat-header {
+      padding: 22px clamp(18px, 4vw, 34px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 12, 18, 0.92);
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #f5feff;
+      font-family: var(--font-display);
+      font-size: clamp(26px, 5vw, 40px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .brand span,
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: 800;
+    }
+
+    .status {
+      min-width: 86px;
+      text-align: right;
+    }
+
+    .status::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      margin-right: 8px;
+      display: inline-block;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 16px rgba(123, 233, 242, 0.7);
+      vertical-align: middle;
+    }
+
+    .messages {
+      min-height: 0;
+      padding: clamp(18px, 4vw, 34px);
       display: flex;
       flex-direction: column;
       gap: 12px;
-      background: #151617;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 18px 0 54px rgba(5, 7, 12, 0.24);
+      overflow: auto;
     }
 
-    .sidebar a {
-      min-height: 44px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
-      text-decoration: none;
-      font-size: 16px;
+    .message {
+      max-width: min(680px, 86%);
+      border: 1px solid rgba(119, 231, 247, 0.18);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #effcff;
+      background: var(--panel);
+      font-size: 15px;
+      line-height: 1.45;
       font-weight: 700;
+      overflow-wrap: anywhere;
     }
 
-    .sidebar button {
-      min-height: 44px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      padding: 0 14px;
+    .connection-panel {
+      padding: 14px clamp(18px, 4vw, 34px);
+      display: grid;
+      grid-template-columns: minmax(170px, 1.2fr) minmax(120px, 0.8fr) minmax(120px, 0.8fr) auto auto;
+      gap: 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 12, 18, 0.9);
+    }
+
+    .connection-panel input,
+    .connection-panel button {
+      min-height: 42px;
+      border-radius: 8px;
+      font: 800 13px/1 var(--font-ui);
+    }
+
+    .connection-panel input {
+      min-width: 0;
+      border: 1px solid rgba(119, 231, 247, 0.24);
+      padding: 0 12px;
       color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
-      font: 700 16px/1 var(--font-ui);
-      text-align: left;
+      background: rgba(5, 12, 18, 0.9);
+      outline: none;
+    }
+
+    .connection-panel input:focus {
+      border-color: rgba(123, 233, 242, 0.78);
+      box-shadow: 0 0 0 3px rgba(123, 233, 242, 0.14);
+    }
+
+    .connection-panel button {
+      border: 0;
+      padding: 0 14px;
+      color: #031014;
+      background: var(--cyan);
       cursor: pointer;
     }
 
-    .sidebar a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .sidebar button:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .hero {
-      position: relative;
-      width: min(1180px, calc(100vw - 270px));
-      min-height: min(700px, 100vh);
-      margin-left: 270px;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-top: 1px solid rgba(117, 233, 248, 0.24);
-      border-bottom: 1px solid rgba(117, 233, 248, 0.2);
-      background:
-        linear-gradient(rgba(101, 224, 244, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(101, 224, 244, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(87, 225, 238, 0.08), transparent 14%, transparent 86%, rgba(87, 225, 238, 0.08)),
-        #05090d;
-      background-size: 138px 138px, 138px 138px, auto, auto;
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      left: 6%;
-      right: 6%;
-      bottom: 15%;
-      height: 55%;
-      border: 3px solid rgba(126, 232, 246, 0.58);
-      border-bottom: 0;
-      border-radius: 999px 999px 0 0;
-      box-shadow:
-        0 0 0 18px rgba(92, 218, 238, 0.045),
-        0 0 0 36px rgba(92, 218, 238, 0.026),
-        0 0 80px rgba(76, 208, 235, 0.18);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      left: 5%;
-      right: 5%;
-      bottom: 12%;
-      height: 36px;
-      background: linear-gradient(90deg, transparent, rgba(100, 221, 242, 0.18), transparent);
-      pointer-events: none;
-    }
-
-    .top-heading {
-      position: absolute;
-      top: 28px;
-      left: 50%;
-      z-index: 3;
-      transform: translateX(-50%);
-      display: grid;
-      justify-items: center;
-      gap: 10px;
+    .connection-panel button.secondary {
       color: #f5feff;
-      font-family: var(--font-display);
-      font-size: clamp(24px, 3vw, 38px);
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0;
-      text-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-      white-space: nowrap;
-    }
-
-    .top-heading span {
-      color: var(--muted);
-      font-family: var(--font-ui);
-      font-size: clamp(13px, 1.3vw, 16px);
-      line-height: 1.35;
-      font-weight: 700;
-    }
-
-    .chart {
-      position: absolute;
-      inset: 22% 8% 20%;
-      pointer-events: none;
-    }
-
-    .chart::before,
-    .chart::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(100, 221, 242, 0.48), transparent);
-      transform-origin: center;
-    }
-
-    .chart::before {
-      bottom: 32%;
-      transform: rotate(-12deg);
-    }
-
-    .chart::after {
-      bottom: 48%;
-      transform: rotate(14deg);
-    }
-
-    .candle {
-      position: absolute;
-      left: var(--x);
-      top: var(--y);
-      width: 7px;
-      height: var(--h);
-      border-radius: 4px;
-      background: var(--c);
-      box-shadow: 0 0 28px color-mix(in srgb, var(--c), transparent 34%);
-    }
-
-    .candle::before {
-      content: "";
-      position: absolute;
-      left: 3px;
-      top: -36px;
-      width: 1px;
-      height: calc(100% + 72px);
-      background: color-mix(in srgb, var(--c), transparent 26%);
-      opacity: 0.82;
-    }
-
-    .content {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      justify-items: center;
-      width: min(1040px, calc(100% - 64px));
-      text-align: center;
-      transform: translateY(18px);
-    }
-
-    h1 {
-      margin: 0 0 26px;
-      color: var(--text);
-      font-family: var(--font-display);
-      font-size: clamp(60px, 7.6vw, 96px);
-      line-height: 0.92;
-      letter-spacing: -0.045em;
-      font-weight: 700;
-      text-shadow: 0 18px 58px rgba(0, 0, 0, 0.55);
-      white-space: nowrap;
-    }
-
-    .byline,
-    .description,
-    .tagline {
-      margin: 0;
-      color: var(--muted);
-      font-size: clamp(16px, 1.7vw, 20px);
-      line-height: 1.45;
-      font-weight: 600;
-    }
-
-    .description {
-      max-width: 680px;
-      margin-bottom: 26px;
-      color: #d8eef4;
-    }
-
-    .byline {
-      margin-bottom: 34px;
-    }
-
-    .byline strong {
-      color: #d9faff;
-      font-weight: 800;
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 18px;
-      margin-top: 46px;
-    }
-
-    .chips span {
-      min-width: 162px;
-      border: 1px solid rgba(119, 231, 247, 0.34);
-      border-radius: 999px;
-      padding: 13px 22px;
-      color: #e9fbff;
-      background: rgba(5, 16, 22, 0.78);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 14px 34px rgba(0, 0, 0, 0.24);
-      font-size: 18px;
-      font-weight: 800;
-      line-height: 1;
-    }
-
-    .highlights {
-      width: min(1180px, calc(100vw - 270px));
-      margin-left: 270px;
-      padding: 76px clamp(24px, 5vw, 72px) 88px;
-      border-bottom: 1px solid rgba(117, 233, 248, 0.16);
-      background: #071017;
-    }
-
-    .highlights-inner {
-      max-width: 920px;
-      margin: 0 auto;
-    }
-
-    .highlights h2 {
-      margin: 0 0 18px;
-      color: #f5feff;
-      font-family: var(--font-display);
-      font-size: clamp(34px, 4vw, 54px);
-      line-height: 1;
-      letter-spacing: 0;
-    }
-
-    .highlights p {
-      max-width: 720px;
-      margin: 0 0 34px;
-      color: var(--muted);
-      font-size: clamp(16px, 1.8vw, 20px);
-      line-height: 1.55;
-      font-weight: 600;
-    }
-
-    .highlights ul {
-      display: grid;
-      gap: 16px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .highlights li {
-      position: relative;
-      padding: 18px 20px 18px 48px;
-      border: 1px solid rgba(119, 231, 247, 0.18);
-      border-radius: 8px;
-      color: #e8f9fc;
-      background: rgba(255, 255, 255, 0.04);
-      font-size: clamp(15px, 1.5vw, 18px);
-      line-height: 1.5;
-      font-weight: 700;
-    }
-
-    .highlights li::before {
-      content: "";
-      position: absolute;
-      left: 22px;
-      top: 27px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 18px rgba(123, 233, 242, 0.65);
-    }
-
-    .auth-panel {
-      width: min(1180px, calc(100vw - 270px));
-      margin-left: 270px;
-      padding: 72px clamp(24px, 5vw, 72px);
-      background: #050b11;
-      border-top: 1px solid rgba(117, 233, 248, 0.16);
-    }
-
-    .auth-panel[hidden] {
-      display: none;
-    }
-
-    .auth-card {
-      max-width: 620px;
-      margin: 0 auto;
       border: 1px solid rgba(119, 231, 247, 0.24);
-      border-radius: 8px;
-      padding: clamp(24px, 4vw, 40px);
-      background: rgba(255, 255, 255, 0.045);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+      background: rgba(255, 255, 255, 0.04);
     }
 
-    .auth-card h2 {
-      margin: 0 0 12px;
-      color: #f5feff;
-      font-family: var(--font-display);
-      font-size: clamp(30px, 3.6vw, 44px);
-      line-height: 1;
-      letter-spacing: 0;
+    .message.bot {
+      align-self: flex-start;
     }
 
-    .auth-card p {
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.55;
-      font-weight: 600;
+    .message.user {
+      align-self: flex-end;
+      color: #031014;
+      background: var(--cyan);
+      border-color: transparent;
     }
 
-    .magic-form {
+    .composer {
+      padding: 16px clamp(18px, 4vw, 34px) 22px;
       display: grid;
-      gap: 14px;
+      grid-template-columns: 1fr 112px;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      background: rgba(5, 12, 18, 0.94);
     }
 
-    .magic-form label {
-      color: #e8f9fc;
-      font-size: 14px;
-      font-weight: 800;
-    }
-
-    .magic-form input {
+    .composer input,
+    .composer select {
       width: 100%;
       min-height: 50px;
       border: 1px solid rgba(119, 231, 247, 0.28);
@@ -401,167 +199,23 @@
       padding: 0 16px;
       color: #ffffff;
       background: rgba(5, 12, 18, 0.88);
-      font: 700 16px/1 var(--font-ui);
-      outline: none;
-    }
-
-    .magic-form input:focus {
-      border-color: rgba(123, 233, 242, 0.78);
-      box-shadow: 0 0 0 3px rgba(123, 233, 242, 0.14);
-    }
-
-    .magic-form button,
-    .magic-link,
-    .google-signin {
-      min-height: 48px;
-      border: 0;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 18px;
-      color: #031014;
-      background: var(--cyan);
-      font: 800 15px/1 var(--font-ui);
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .google-signin {
-      width: 100%;
-      margin-bottom: 18px;
-      gap: 10px;
-      color: #f7f7f2;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    .auth-divider {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 12px;
-      margin: 0 0 18px;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .auth-divider::before,
-    .auth-divider::after {
-      content: "";
-      height: 1px;
-      background: rgba(119, 231, 247, 0.18);
-    }
-
-    .magic-result {
-      margin-top: 18px;
-      padding: 16px;
-      border: 1px solid rgba(119, 231, 247, 0.2);
-      border-radius: 8px;
-      background: rgba(5, 16, 22, 0.72);
-    }
-
-    .magic-result[hidden] {
-      display: none;
-    }
-
-    .magic-result p {
-      margin-bottom: 14px;
-      font-size: 14px;
-    }
-
-    .magic-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .realtime {
-      width: min(1180px, calc(100vw - 270px));
-      margin-left: 270px;
-      padding: 76px clamp(24px, 5vw, 72px) 88px;
-      background: #071017;
-      border-top: 1px solid rgba(117, 233, 248, 0.16);
-    }
-
-    .realtime[hidden] {
-      display: none;
-    }
-
-    .realtime-inner {
-      max-width: 920px;
-      margin: 0 auto;
-    }
-
-    .realtime h2 {
-      margin: 0 0 14px;
-      color: #f5feff;
-      font-family: var(--font-display);
-      font-size: clamp(34px, 4vw, 54px);
-      line-height: 1;
-      letter-spacing: 0;
-    }
-
-    .realtime-copy {
-      max-width: 720px;
-      margin: 0 0 30px;
-      color: var(--muted);
-      font-size: clamp(16px, 1.8vw, 20px);
-      line-height: 1.55;
-      font-weight: 600;
-    }
-
-    .realtime-grid {
-      display: grid;
-      grid-template-columns: minmax(220px, 280px) 1fr;
-      gap: 18px;
-    }
-
-    .realtime-controls,
-    .chat-box {
-      border: 1px solid rgba(119, 231, 247, 0.2);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.045);
-    }
-
-    .realtime-controls {
-      display: grid;
-      align-content: start;
-      gap: 14px;
-      padding: 18px;
-    }
-
-    .realtime-controls label {
-      display: grid;
-      gap: 8px;
-      color: #e8f9fc;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .realtime-controls input,
-    .message-form input {
-      width: 100%;
-      min-height: 46px;
-      border: 1px solid rgba(119, 231, 247, 0.28);
-      border-radius: 8px;
-      padding: 0 14px;
-      color: #ffffff;
-      background: rgba(5, 12, 18, 0.88);
       font: 700 15px/1 var(--font-ui);
       outline: none;
     }
 
-    .realtime-controls input:focus,
-    .message-form input:focus {
+    .composer select[hidden] {
+      display: none;
+    }
+
+    .composer input:focus,
+    .composer select:focus {
       border-color: rgba(123, 233, 242, 0.78);
       box-shadow: 0 0 0 3px rgba(123, 233, 242, 0.14);
     }
 
-    .realtime-controls button,
-    .message-form button {
-      min-height: 46px;
+    .composer button,
+    .seed-action {
+      min-height: 50px;
       border: 0;
       border-radius: 8px;
       color: #031014;
@@ -570,348 +224,114 @@
       cursor: pointer;
     }
 
-    .connection-status,
-    .typing-status {
-      min-height: 21px;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-      font-weight: 700;
+    .seed-action {
+      align-self: flex-start;
+      min-height: 44px;
+      padding: 0 18px;
     }
 
-    .chat-box {
-      min-height: 430px;
-      display: grid;
-      grid-template-rows: 1fr auto auto;
-      overflow: hidden;
+    .composer button:active,
+    .seed-action:active {
+      transform: translateY(1px);
     }
 
-    .messages {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      min-height: 320px;
-      max-height: 430px;
-      overflow: auto;
-      padding: 18px;
-    }
-
-    .message {
-      max-width: 78%;
-      border: 1px solid rgba(119, 231, 247, 0.18);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: #effcff;
-      background: rgba(255, 255, 255, 0.055);
-      font-size: 15px;
-      line-height: 1.45;
-      font-weight: 700;
-      overflow-wrap: anywhere;
-    }
-
-    .message.sent {
-      align-self: flex-end;
-      color: #031014;
-      background: var(--cyan);
-    }
-
-    .message.system {
-      align-self: center;
-      max-width: 100%;
-      color: var(--muted);
-      background: transparent;
-      border-color: rgba(119, 231, 247, 0.12);
-      font-size: 13px;
-    }
-
-    .typing-status {
-      padding: 0 18px 10px;
-    }
-
-    .message-form {
-      display: grid;
-      grid-template-columns: 1fr 110px;
-      gap: 10px;
-      padding: 14px;
-      border-top: 1px solid rgba(119, 231, 247, 0.14);
-    }
-
-    .auth-status {
-      margin-top: 18px;
-      color: #d9faff;
-      font-size: 14px;
-      line-height: 1.5;
-      font-weight: 800;
-    }
-
-    .footer {
-      width: min(1180px, calc(100vw - 270px));
-      margin-left: 270px;
-      padding: 24px;
-      border-top: 1px solid rgba(117, 233, 248, 0.12);
-      color: var(--muted);
-      background: #05090d;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .disclaimer {
-      max-width: 820px;
-      margin: 0 auto 14px;
-      color: rgba(199, 213, 220, 0.78);
-      font-size: 13px;
-      line-height: 1.55;
-      font-weight: 600;
-    }
-
-    @media (max-width: 760px) {
-      body {
-        overflow: auto;
+    @media (max-width: 640px) {
+      .chat-app {
+        border: 0;
       }
 
-      .sidebar {
-        position: static;
-        width: auto;
-        min-height: auto;
+      .chat-header {
+        align-items: flex-start;
+        flex-direction: column;
       }
 
-      .hero {
-        width: 100%;
-        margin-left: 0;
-        min-height: 100vh;
+      .status {
+        text-align: left;
       }
 
-      .content {
-        width: calc(100% - 32px);
+      .message {
+        max-width: 94%;
       }
 
-      h1 {
-        white-space: normal;
-      }
-
-      .chips {
-        gap: 10px;
-        margin-top: 32px;
-      }
-
-      .chips span {
-        min-width: 0;
-        font-size: 14px;
-      }
-
-      .highlights {
-        width: 100%;
-        margin-left: 0;
-        padding: 56px 20px 64px;
-      }
-
-      .highlights li {
-        padding-right: 16px;
-      }
-
-      .auth-panel {
-        width: 100%;
-        margin-left: 0;
-        padding: 48px 20px;
-      }
-
-      .realtime {
-        width: 100%;
-        margin-left: 0;
-        padding: 56px 20px 64px;
-      }
-
-      .realtime-grid {
+      .connection-panel {
         grid-template-columns: 1fr;
       }
 
-      .message-form {
+      .composer {
         grid-template-columns: 1fr;
-      }
-
-      .footer {
-        width: 100%;
-        margin-left: 0;
       }
     }
   </style>
 </head>
 <body>
-  <nav class="sidebar" aria-label="CipherLane navigation">
-    <button id="signin" type="button">Sign in</button>
-    <a href="#highlights">Highlights</a>
-  </nav>
-
-  <main class="hero" aria-label="CipherLane technology preview">
-    <div class="top-heading">Cipherlane<span>One of the most safe and secure messenger</span></div>
-
-    <div class="chart" aria-hidden="true">
-      <span class="candle" style="--x: 0%; --y: 52%; --h: 116px; --c: var(--blue);"></span>
-      <span class="candle" style="--x: 5%; --y: 55%; --h: 62px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 10%; --y: 50%; --h: 84px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 16%; --y: 43%; --h: 116px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 22%; --y: 41%; --h: 126px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 28%; --y: 43%; --h: 118px; --c: var(--blue);"></span>
-      <span class="candle" style="--x: 34%; --y: 48%; --h: 72px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 40%; --y: 46%; --h: 86px; --c: var(--blue);"></span>
-      <span class="candle" style="--x: 66%; --y: 36%; --h: 132px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 72%; --y: 33%; --h: 148px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 78%; --y: 40%; --h: 96px; --c: var(--blue);"></span>
-      <span class="candle" style="--x: 84%; --y: 43%; --h: 92px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 90%; --y: 39%; --h: 106px; --c: var(--cyan);"></span>
-      <span class="candle" style="--x: 96%; --y: 33%; --h: 140px; --c: var(--cyan);"></span>
-    </div>
-
-    <section id="preview" class="content">
-      <h1>Privacy Through Time</h1>
-      <p class="description">A living view of how trust is created, shared, and renewed.<br />CipherLane keeps private circles protected across every session.</p>
-      <p class="byline"><strong>CipherLane Team</strong> on 21 Jun 2026</p>
-      <p class="tagline">Build now - rewind trust - watch it live</p>
-      <div class="chips" aria-label="CipherLane privacy pillars">
-        <span>Seed identity</span>
-        <span>Verified sessions</span>
-        <span>Member-approved circles</span>
+  <main class="chat-app" aria-label="CipherLane chatbot">
+    <header class="chat-header">
+      <div class="brand">
+        <h1>CipherLane</h1>
+        <span>Safe and secure messenger</span>
       </div>
+      <div class="status" id="status">Online</div>
+    </header>
+
+    <section class="messages" id="messages" aria-live="polite"></section>
+
+    <section class="connection-panel" aria-label="Secure chat connection">
+      <input id="server-url" type="text" value="ws://localhost:8765" aria-label="Server URL" />
+      <input id="you-id" type="text" placeholder="You" aria-label="Your ID" />
+      <input id="friend-id" type="text" placeholder="Friend" aria-label="Friend ID" />
+      <button id="connect-button" type="button">Connect</button>
+      <button id="secure-button" class="secondary" type="button">Start Secure</button>
     </section>
+
+    <form class="composer" id="composer">
+      <input id="message-input" type="text" autocomplete="off" placeholder="Type a message" />
+      <select id="country-select" hidden>
+        <option value="">Select country</option>
+        <option>Australia</option>
+        <option>Brazil</option>
+        <option>Canada</option>
+        <option>France</option>
+        <option>Germany</option>
+        <option>India</option>
+        <option>Japan</option>
+        <option>Singapore</option>
+        <option>United Arab Emirates</option>
+        <option>United Kingdom</option>
+        <option>United States</option>
+      </select>
+      <button type="submit">Send</button>
+    </form>
   </main>
 
-  <section id="highlights" class="highlights" aria-label="CipherLane highlights">
-    <div class="highlights-inner">
-      <h2>Highlights</h2>
-      <p>CipherLane is designed around privacy-first communication, with control built into the way people join, verify, and stay connected.</p>
-      <ul>
-        <li>Member-approved circles keep access intentional, unlike open invite flows where links can spread beyond the original group.</li>
-        <li>Verified sessions make every device connection explicit, so users know which sessions are trusted before conversations continue.</li>
-        <li>Seed identity gives users a stable private identity layer without relying only on phone numbers or disposable account handles.</li>
-        <li>Time-aware trust helps conversations evolve safely by renewing permissions instead of assuming old access should last forever.</li>
-        <li>Focused private circles reduce noise and exposure compared with broad messenger groups built for scale over confidentiality.</li>
-      </ul>
-    </div>
-  </section>
-
-  <section id="magic-signin" class="auth-panel" aria-label="Magic link sign in" hidden>
-    <div class="auth-card">
-      <h2>Sign in with magic link</h2>
-      <p>Enter your email address and CipherLane will send a Firebase sign-in link to your inbox.</p>
-      <button class="google-signin" id="google-signin" type="button">Sign in with Google</button>
-      <div class="auth-divider">or</div>
-      <form class="magic-form" id="magic-form">
-        <label for="magic-email">Email address</label>
-        <input id="magic-email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required />
-        <button type="submit">Send magic link</button>
-      </form>
-      <div class="magic-result" id="magic-result" hidden>
-        <p>Check your inbox and open the Firebase sign-in link on this device.</p>
-        <div class="magic-actions">
-          <a class="magic-link" id="magic-link" href="#signin">Back to sign in</a>
-        </div>
-      </div>
-      <div class="auth-status" id="auth-status" role="status" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section id="realtime" class="realtime" aria-label="Realtime messenger" hidden>
-    <div class="realtime-inner">
-      <h2>Realtime Messenger</h2>
-      <p class="realtime-copy">Connect with a private ID, choose a recipient ID, and exchange live messages through the CipherLane websocket relay.</p>
-      <div class="realtime-grid">
-        <div class="realtime-controls">
-          <label for="client-id">Your ID
-            <input id="client-id" type="text" autocomplete="username" placeholder="alice" />
-          </label>
-          <label for="peer-id">Recipient ID
-            <input id="peer-id" type="text" autocomplete="off" placeholder="bob" />
-          </label>
-          <button id="connect-realtime" type="button">Connect realtime</button>
-          <div class="connection-status" id="connection-status">Disconnected</div>
-        </div>
-        <div class="chat-box">
-          <div class="messages" id="messages" aria-live="polite"></div>
-          <div class="typing-status" id="typing-status"></div>
-          <form class="message-form" id="message-form">
-            <input id="message-input" type="text" autocomplete="off" placeholder="Type a message" />
-            <button type="submit">Send</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer">
-    <p class="disclaimer">Disclaimer: Security and privacy features may change as the product evolves, and users should review current settings before relying on the service for sensitive communication.</p>
-    <div>&copy; 2026 mpaiapps</div>
-  </footer>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      isSignInWithEmailLink,
-      onAuthStateChanged,
-      sendSignInLinkToEmail,
-      signInWithPopup,
-      signInWithEmailLink,
-      signOut,
-    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-    import { firebaseConfig } from "./firebase-config.js";
-
-    const signInButton = document.getElementById("signin");
-    const authPanel = document.getElementById("magic-signin");
-    const form = document.getElementById("magic-form");
-    const googleSignInButton = document.getElementById("google-signin");
-    const emailInput = document.getElementById("magic-email");
-    const result = document.getElementById("magic-result");
-    const magicLink = document.getElementById("magic-link");
-    const status = document.getElementById("auth-status");
-    const realtimeSection = document.getElementById("realtime");
-    const clientIdInput = document.getElementById("client-id");
-    const peerIdInput = document.getElementById("peer-id");
-    const connectRealtimeButton = document.getElementById("connect-realtime");
-    const connectionStatus = document.getElementById("connection-status");
+  <script>
     const messages = document.getElementById("messages");
-    const typingStatus = document.getElementById("typing-status");
-    const messageForm = document.getElementById("message-form");
+    const composer = document.getElementById("composer");
     const messageInput = document.getElementById("message-input");
-    let socket;
-    let realtimeClientId = "";
-    let typingTimer;
-    let realtimeMode = "offline";
-    let hasShownWelcomeMessage = false;
-    let channel = "BroadcastChannel" in window ? new BroadcastChannel("cipherlane_realtime") : null;
-    const hasFirebaseConfig = !Object.values(firebaseConfig).some((value) => value.startsWith("PASTE_FIREBASE_"));
-    const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
-    const auth = app ? getAuth(app) : null;
-    const googleProvider = auth ? new GoogleAuthProvider() : null;
+    const countrySelect = document.getElementById("country-select");
+    const serverUrlInput = document.getElementById("server-url");
+    const youIdInput = document.getElementById("you-id");
+    const friendIdInput = document.getElementById("friend-id");
+    const connectButton = document.getElementById("connect-button");
+    const secureButton = document.getElementById("secure-button");
+    let firstName = "";
+    let secondName = "";
+    let country = "";
+    let phoneNumber = "";
+    let emailId = "";
+    let generatedSeed = "";
+    let currentStep = "firstName";
+    let socket = null;
+    let keyPair = null;
+    let sharedKey = null;
+    let secureReady = false;
+    let demoMode = false;
+    const seedMessage = "Unlike other messengers, CipherLane does not use your phone number as your messenger identity. This helps keep your ID private. To continue, you need to generate a seed. Your seed is your CipherLane identity, so please click Generate Seed to create it.";
 
-    function showAuthPanel() {
-      authPanel.hidden = false;
-      authPanel.scrollIntoView({ behavior: "smooth", block: "start" });
-      emailInput.focus();
+    if (window.location.protocol.startsWith("http") && window.location.hostname) {
+      serverUrlInput.value = `ws://${window.location.hostname}:8765`;
     }
 
-    function startChatbot(identity) {
-      const userIdentity = identity || "CipherLane user";
-      localStorage.setItem("cipherlane_user", userIdentity);
-      status.textContent = `Signed in as ${userIdentity}.`;
-      signInButton.textContent = "Signed in";
-      clientIdInput.value = clientIdInput.value || userIdentity.split("@")[0];
-      authPanel.hidden = true;
-      result.hidden = true;
-      realtimeSection.hidden = false;
-      if (!hasShownWelcomeMessage) {
-        addMessage("welcome to cipherlane - one of the most safe and secure messengers", "system");
-        hasShownWelcomeMessage = true;
-      }
-      realtimeSection.scrollIntoView({ behavior: "smooth", block: "start" });
-      messageInput.focus();
-    }
-
-    function completeMagicSignIn(email) {
-      startChatbot(email);
-    }
-
-    function addMessage(text, variant = "system") {
+    function addMessage(text, variant = "bot") {
       const item = document.createElement("div");
       item.className = `message ${variant}`;
       item.textContent = text;
@@ -919,244 +339,377 @@
       messages.scrollTop = messages.scrollHeight;
     }
 
-    function setConnectionStatus(text) {
-      connectionStatus.textContent = text;
+    function addActionButton(label, onClick) {
+      const button = document.createElement("button");
+      button.className = "seed-action";
+      button.type = "button";
+      button.textContent = label;
+      button.addEventListener("click", onClick);
+      messages.appendChild(button);
+      messages.scrollTop = messages.scrollHeight;
+      return button;
     }
 
-    function handleRealtimeData(data) {
-      if (data.to && data.to !== realtimeClientId) {
-        return;
+    function getBotReply(text) {
+      const normalized = text.toLowerCase();
+      if (normalized.includes("secure") || normalized.includes("safe")) {
+        return "CipherLane keeps the conversation focused on privacy, verified sessions, and secure messaging.";
       }
+      if (normalized.includes("hello") || normalized.includes("hi")) {
+        return `Hello${firstName ? ` ${firstName}` : ""}. CipherLane is ready.`;
+      }
+      return "Message received. CipherLane chatbot is active.";
+    }
 
+    function getYourId() {
+      return youIdInput.value.trim();
+    }
+
+    function getFriendId() {
+      return friendIdInput.value.trim();
+    }
+
+    function bytesToBase64(bytes) {
+      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    }
+
+    function base64ToBytes(value) {
+      return Uint8Array.from(atob(value), (char) => char.charCodeAt(0));
+    }
+
+    async function generateKeyPair() {
+      keyPair = await crypto.subtle.generateKey(
+        { name: "ECDH", namedCurve: "P-256" },
+        false,
+        ["deriveKey"]
+      );
+      return keyPair;
+    }
+
+    async function exportPublicKey() {
+      if (!keyPair) {
+        await generateKeyPair();
+      }
+      const raw = await crypto.subtle.exportKey("raw", keyPair.publicKey);
+      return bytesToBase64(raw);
+    }
+
+    async function deriveSharedKey(peerPublicKeyBase64) {
+      if (!keyPair) {
+        await generateKeyPair();
+      }
+      const peerPublicKey = await crypto.subtle.importKey(
+        "raw",
+        base64ToBytes(peerPublicKeyBase64),
+        { name: "ECDH", namedCurve: "P-256" },
+        false,
+        []
+      );
+      sharedKey = await crypto.subtle.deriveKey(
+        { name: "ECDH", public: peerPublicKey },
+        keyPair.privateKey,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+      secureReady = true;
+    }
+
+    async function encryptText(text) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        sharedKey,
+        new TextEncoder().encode(text)
+      );
+      return {
+        iv: bytesToBase64(iv),
+        ciphertext: bytesToBase64(encrypted),
+      };
+    }
+
+    async function decryptText(payload) {
+      const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: base64ToBytes(payload.iv) },
+        sharedKey,
+        base64ToBytes(payload.ciphertext)
+      );
+      return new TextDecoder().decode(decrypted);
+    }
+
+    function sendRelayMessage(payload) {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        addMessage("Connect to the relay before sending secure messages.");
+        return false;
+      }
+      socket.send(JSON.stringify({
+        ...payload,
+        from: getYourId(),
+        to: getFriendId(),
+        expires_at: Date.now() + 300000,
+      }));
+      return true;
+    }
+
+    async function handleRelayMessage(data) {
       if (data.type === "connected") {
-        return;
-      }
-
-      if (data.type === "chat") {
-        addMessage(`${data.from}: ${data.content}`, "received");
-        typingStatus.textContent = "";
-        return;
-      }
-
-      if (data.type === "typing") {
-        typingStatus.textContent = `${data.from} is typing...`;
-        window.clearTimeout(typingTimer);
-        typingTimer = window.setTimeout(() => {
-          typingStatus.textContent = "";
-        }, 1800);
+        addMessage("Connected to relay. Start Secure when your friend is online.");
         return;
       }
 
       if (data.type === "error") {
-        addMessage(data.message || "Server error.", "system");
-      }
-    }
-
-    function useLocalRealtimeFallback() {
-      if (realtimeMode === "local") {
-        return;
-      }
-      realtimeMode = "local";
-      setConnectionStatus(`Connected locally as ${realtimeClientId}`);
-      addMessage("Websocket server is unavailable, so local realtime mode is active. Open this app in another tab to test live messaging.", "system");
-    }
-
-    function connectRealtime() {
-      const clientId = clientIdInput.value.trim();
-      if (!clientId) {
-        setConnectionStatus("Enter your ID before connecting.");
-        clientIdInput.focus();
+        addMessage(`Relay error: ${data.message || "Unknown error"}`);
         return;
       }
 
-      if (socket && socket.readyState === WebSocket.OPEN) {
+      if (data.type === "key_exchange") {
+        await deriveSharedKey(data.public_key);
+        sendRelayMessage({
+          type: "key_exchange_response",
+          public_key: await exportPublicKey(),
+        });
+        addMessage(`Secure channel established with ${data.from}.`);
+        return;
+      }
+
+      if (data.type === "key_exchange_response") {
+        await deriveSharedKey(data.public_key);
+        sendRelayMessage({ type: "key_confirmed" });
+        addMessage(`Secure channel established with ${data.from}.`);
+        return;
+      }
+
+      if (data.type === "key_confirmed") {
+        addMessage(`Secure channel confirmed with ${data.from}.`);
+        return;
+      }
+
+      if (data.type === "chat") {
+        if (!sharedKey) {
+          addMessage("Encrypted message received before the secure channel was ready.");
+          return;
+        }
+        try {
+          const text = await decryptText(data.content);
+          addMessage(text);
+        } catch {
+          addMessage("Could not decrypt the incoming message.");
+        }
+      }
+    }
+
+    function connectToRelay() {
+      const serverUrl = serverUrlInput.value.trim();
+      const yourId = getYourId();
+      if (!serverUrl || !yourId) {
+        addMessage("Enter a server URL and your ID before connecting.");
+        return;
+      }
+
+      if (socket) {
         socket.close();
       }
 
-      realtimeClientId = clientId;
-      setConnectionStatus("Connecting...");
-      realtimeMode = "socket";
-      socket = new WebSocket("ws://localhost:8765");
-
+      demoMode = false;
+      socket = new WebSocket(serverUrl);
       socket.addEventListener("open", () => {
-        socket.send(JSON.stringify({ client_id: realtimeClientId }));
-        setConnectionStatus(`Connected as ${realtimeClientId}`);
-        addMessage(`Connected as ${realtimeClientId}. Ask another user to connect with a different ID.`, "system");
+        socket.send(JSON.stringify({ client_id: yourId }));
       });
-
-      socket.addEventListener("message", (event) => {
-        let data;
+      socket.addEventListener("message", async (event) => {
         try {
-          data = JSON.parse(event.data);
+          await handleRelayMessage(JSON.parse(event.data));
         } catch {
-          addMessage("Received an unreadable message.", "system");
+          addMessage("Received an unreadable relay message.");
+        }
+      });
+      socket.addEventListener("close", () => {
+        if (demoMode) {
+          return;
+        }
+        secureReady = false;
+        sharedKey = null;
+        addMessage("Disconnected from relay.");
+      });
+      socket.addEventListener("error", () => {
+        if (getFriendId() === "CL-FRIEND01") {
+          demoMode = true;
+          secureReady = true;
+          addMessage("Demo friend CL-FRIEND01 is ready locally. You can send a message now.");
+          return;
+        }
+        addMessage("Relay connection failed. Start server.py and try Connect again.");
+      });
+    }
+
+    async function startSecureChat() {
+      if (!getFriendId()) {
+        addMessage("Enter your friend's ID before starting secure chat.");
+        return;
+      }
+      if (demoMode || getFriendId() === "CL-FRIEND01") {
+        demoMode = true;
+        secureReady = true;
+        addMessage("Demo secure channel established with CL-FRIEND01.");
+        return;
+      }
+      await generateKeyPair();
+      const sent = sendRelayMessage({
+        type: "key_exchange",
+        public_key: await exportPublicKey(),
+      });
+      if (sent) {
+        addMessage(`Secure request sent to ${getFriendId()}.`);
+      }
+    }
+
+    function showSeedStep() {
+      addMessage(seedMessage);
+      addActionButton("Generate Seed", (event) => {
+        const button = event.currentTarget;
+        generatedSeed = `CL-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
+        button.remove();
+        addMessage(`Seed generated: ${generatedSeed}`);
+        window.setTimeout(showSeedConfirmationStep, 250);
+      });
+    }
+
+    function showSeedConfirmationStep() {
+      addMessage("Please confirm and save your seed. This seed is your private CipherLane identity. Keep it safe, because it will be used to recover or verify your account.");
+      addActionButton("Save Seed", async () => {
+        localStorage.setItem("cipherlane_seed", generatedSeed);
+        try {
+          await navigator.clipboard.writeText(generatedSeed);
+          addMessage("Seed saved locally and copied to clipboard.");
+        } catch {
+          addMessage("Seed saved locally. Please write it down and keep it safe.");
+        }
+      });
+      addActionButton("I Have Saved My Seed", (event) => {
+        event.currentTarget.remove();
+        showFirstChatStep();
+      });
+    }
+
+    function showFirstChatStep() {
+      addMessage("Would you like to create your first secure chat now?");
+      addActionButton("Start Secure Chat", () => {
+        addMessage("Secure chat is ready. Enter both IDs above, connect, then start secure.");
+        currentStep = "chat";
+        messageInput.disabled = false;
+        messageInput.placeholder = "Type a message";
+        messageInput.type = "text";
+        messageInput.focus();
+      });
+      addActionButton("Invite Contact", () => {
+        addMessage("Invite flow is ready. Share your CipherLane seed ID only with trusted contacts.");
+        currentStep = "chat";
+        messageInput.disabled = false;
+        messageInput.placeholder = "Type a message";
+        messageInput.type = "text";
+        messageInput.focus();
+      });
+    }
+
+    composer.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (currentStep === "country") {
+        const selectedCountry = countrySelect.value;
+        if (!selectedCountry) {
+          countrySelect.focus();
           return;
         }
 
-        handleRealtimeData(data);
-      });
-
-      socket.addEventListener("close", () => {
-        if (realtimeMode === "socket") {
-          useLocalRealtimeFallback();
-        }
-      });
-
-      socket.addEventListener("error", () => {
-        useLocalRealtimeFallback();
-      });
-    }
-
-    function sendRealtimeMessage(event) {
-      event.preventDefault();
-      const peerId = peerIdInput.value.trim();
-      const content = messageInput.value.trim();
-      if (!content) {
+        country = selectedCountry;
+        addMessage(country, "user");
+        countrySelect.hidden = true;
+        messageInput.hidden = false;
+        messageInput.placeholder = "Phone number";
+        messageInput.type = "tel";
+        currentStep = "phone";
+        window.setTimeout(() => addMessage("What is your phone number"), 250);
+        messageInput.focus();
         return;
       }
 
-      if (realtimeMode === "offline") {
-        addMessage("Connect realtime before sending.", "system");
+      const text = messageInput.value.trim();
+      if (!text) {
         return;
       }
 
-      if (!peerId) {
-        addMessage("Enter a recipient ID before sending.", "system");
-        peerIdInput.focus();
-        return;
-      }
-
-      const payload = {
-        type: "chat",
-        from: realtimeClientId,
-        to: peerId,
-        content,
-        expires_at: Date.now() + 5 * 60 * 1000,
-      };
-      if (realtimeMode === "socket" && socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(payload));
-      } else if (channel) {
-        channel.postMessage(payload);
-      }
-      addMessage(content, "sent");
+      addMessage(text, "user");
       messageInput.value = "";
-    }
-
-    function sendTypingSignal() {
-      const peerId = peerIdInput.value.trim();
-      if (!peerId || realtimeMode === "offline") {
+      if (currentStep === "phone") {
+        phoneNumber = text;
+        messageInput.placeholder = "Email ID";
+        messageInput.type = "email";
+        currentStep = "email";
+        window.setTimeout(() => addMessage("Email ID"), 250);
         return;
       }
 
-      const payload = {
-        type: "typing",
-        from: realtimeClientId,
-        to: peerId,
-        expires_at: Date.now() + 30 * 1000,
-      };
-      if (realtimeMode === "socket" && socket && socket.readyState === WebSocket.OPEN) {
-        socket.send(JSON.stringify(payload));
-      } else if (channel) {
-        channel.postMessage(payload);
-      }
-    }
-
-    signInButton.addEventListener("click", () => startChatbot("CipherLane user"));
-    googleSignInButton.addEventListener("click", async () => {
-      if (!auth || !googleProvider) {
-        status.textContent = "Firebase config is missing. Update web/firebase-config.js before using Google sign-in.";
+      if (currentStep === "email") {
+        emailId = text;
+        messageInput.placeholder = "Generate seed to continue";
+        messageInput.disabled = true;
+        currentStep = "seed";
+        window.setTimeout(showSeedStep, 250);
         return;
       }
 
-      try {
-        const credential = await signInWithPopup(auth, googleProvider);
-        completeMagicSignIn(credential.user.email || credential.user.displayName || "Google user");
-      } catch (error) {
-        status.textContent = error.message || "Could not sign in with Google.";
-      }
-    });
-    connectRealtimeButton.addEventListener("click", connectRealtime);
-    messageForm.addEventListener("submit", sendRealtimeMessage);
-    messageInput.addEventListener("input", sendTypingSignal);
-    if (channel) {
-      channel.addEventListener("message", (event) => {
-        handleRealtimeData(event.data);
-      });
-    }
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const email = emailInput.value.trim();
-      if (!email) {
-        return;
-      }
-
-      if (!auth) {
-        status.textContent = "Firebase config is missing. Update web/firebase-config.js before sending email links.";
-        return;
-      }
-
-      const actionCodeSettings = {
-        url: `${location.origin}${location.pathname}`,
-        handleCodeInApp: true,
-      };
-
-      try {
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-        localStorage.setItem("cipherlane_email_for_signin", email);
-        result.hidden = false;
-        status.textContent = `Magic link sent to ${email}.`;
-      } catch (error) {
-        status.textContent = error.message || "Could not send magic link.";
-      }
-    });
-
-    if (!hasFirebaseConfig) {
-      status.textContent = "Firebase config is missing. Add your project values in web/firebase-config.js.";
-    }
-
-    if (auth && isSignInWithEmailLink(auth, window.location.href)) {
-      let email = localStorage.getItem("cipherlane_email_for_signin");
-      if (!email) {
-        email = window.prompt("Enter the email address used for sign in");
-      }
-      if (email) {
-        signInWithEmailLink(auth, email, window.location.href)
-          .then((credential) => {
-            localStorage.removeItem("cipherlane_email_for_signin");
-            completeMagicSignIn(credential.user.email || email);
-            history.replaceState(null, "", location.pathname);
-          })
-          .catch((error) => {
-            showAuthPanel();
-            status.textContent = error.message || "This magic link is invalid or expired.";
-          });
-      }
-    } else if (auth) {
-      onAuthStateChanged(auth, (user) => {
-        if (user?.email) {
-          completeMagicSignIn(user.email);
+      if (currentStep === "chat") {
+        if (demoMode && secureReady) {
+          window.setTimeout(() => addMessage(`CL-FRIEND01 received: ${text}`), 250);
+        } else if (socket && socket.readyState === WebSocket.OPEN && secureReady && getFriendId()) {
+          encryptText(text).then((content) => {
+            sendRelayMessage({ type: "chat", content });
+          }).catch(() => addMessage("Could not encrypt the message."));
+        } else {
+          window.setTimeout(() => addMessage(getBotReply(text)), 250);
         }
-      });
-    } else {
-      const user = localStorage.getItem("cipherlane_user");
-      if (user) {
-        completeMagicSignIn(user);
+        return;
       }
+
+      if (currentStep === "firstName" && !firstName) {
+        firstName = text;
+        messageInput.placeholder = "Second name";
+        currentStep = "secondName";
+        window.setTimeout(() => addMessage("Please enter your Second Name"), 250);
+        return;
+      }
+
+      if (currentStep === "secondName" && !secondName) {
+        secondName = text;
+        messageInput.hidden = true;
+        countrySelect.hidden = false;
+        currentStep = "country";
+        window.setTimeout(() => {
+          addMessage("What is your Country");
+          countrySelect.focus();
+        }, 250);
+        return;
+      }
+
+      window.setTimeout(() => addMessage(getBotReply(text)), 250);
+    });
+
+    const savedSeed = localStorage.getItem("cipherlane_seed");
+
+    if (savedSeed) {
+      generatedSeed = savedSeed;
+      currentStep = "chat";
+      youIdInput.value = savedSeed;
+      addMessage("Seed found locally. Secure chat is ready. Enter your friend's ID, connect, then start secure.");
+      messageInput.placeholder = "Type a message";
+      messageInput.focus();
+    } else {
+      addMessage("welcome to cipherlane - one of the most safe and secure messengers");
+      addMessage("Please enter your First Name");
+      messageInput.placeholder = "First name";
+      messageInput.focus();
     }
 
-    window.cipherlaneSignOut = async () => {
-      if (auth) {
-        await signOut(auth);
-      }
-      localStorage.removeItem("cipherlane_user");
-      signInButton.textContent = "Sign in";
-      status.textContent = "Signed out.";
-      result.hidden = true;
-      realtimeSection.hidden = true;
-      messages.replaceChildren();
-      hasShownWelcomeMessage = false;
-    };
+    connectButton.addEventListener("click", connectToRelay);
+    secureButton.addEventListener("click", startSecureChat);
   </script>
 </body>
 </html>
